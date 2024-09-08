@@ -10,6 +10,8 @@ import { useNavigate } from "react-router-dom";
 const ListComponentNavBar = ({ showSideBar, setShowSideBar }) => {
   const navigate = useNavigate();
 
+  //================================================
+
   return (
     <MainSection>
       <li
@@ -64,6 +66,8 @@ const ListComponentNavBar = ({ showSideBar, setShowSideBar }) => {
 
 export default ListComponentNavBar;
 
+//================================================
+
 const MainSection = styled.ul`
   list-style-type: none;
   font-family: myFont;
@@ -99,3 +103,5 @@ const MainSection = styled.ul`
     font-family: myFont;
   }
 `;
+
+//================================================

@@ -1,88 +1,55 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import styled from "styled-components";
-import Button from "@mui/material/Button";
 import Avatar from "@mui/material/Avatar";
-import Profile from "../Components/Profile";
-import ResetPassword from "../Components/ResetPassword";
-import DeleteAccount from "../Components/DeleteAccount";
-import Attention from "../Components/Attention";
-import Rate_Us from "../Components/Rate_Us";
-import PrivacyComponent from "../Components/PrivacyComponent";
+import ProfileButton from "../Components/ProfileButton";
 import { useSelector } from "react-redux";
+import { ProfileSettingsHook } from "../customHooks/ProfileSettingsHook/ProfileSettingsHook";
 
 //================================================================
 
 const ProfilePage = () => {
-  const [profile, setProfile] = useState(true);
-  const [resetPassword, setResetPassword] = useState(false);
-  const [deleteAccount, setDeleteAccount] = useState(false);
-  const [attention, setAttention] = useState(false);
-  const [rateUs, setRateUs] = useState(false);
-  const [privacy, setPrivacy] = useState(false);
-
+  const { settings, componentsFunction } = ProfileSettingsHook();
   const user = useSelector((state) => state.user.value);
+
+  //================================================================
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
+  //================================================================
+
   const showProfile = () => {
-    setProfile(true);
-    setResetPassword(false);
-    setDeleteAccount(false);
-    setAttention(false);
-    setRateUs(false);
-    setPrivacy(false);
+    settings(true, false, false, false, false, false);
   };
 
   const showResetPassword = () => {
-    setProfile(false);
-    setResetPassword(true);
-    setDeleteAccount(false);
-    setAttention(false);
-    setRateUs(false);
-    setPrivacy(false);
+    settings(false, true, false, false, false, false);
   };
 
   const showDeleteAccount = () => {
-    setProfile(false);
-    setResetPassword(false);
-    setDeleteAccount(true);
-    setAttention(false);
-    setRateUs(false);
-    setPrivacy(false);
+    settings(false, false, true, false, false, false);
   };
 
   const showAttention = () => {
-    setProfile(false);
-    setResetPassword(false);
-    setDeleteAccount(false);
-    setRateUs(false);
-    setAttention(true);
-    setPrivacy(false);
+    settings(false, false, false, true, false, false);
   };
 
   const showRateUs = () => {
-    setProfile(false);
-    setResetPassword(false);
-    setDeleteAccount(false);
-    setAttention(false);
-    setRateUs(true);
-    setPrivacy(false);
+    settings(false, false, false, false, true, false);
   };
 
   const showPrivacy = () => {
-    setProfile(false);
-    setResetPassword(false);
-    setDeleteAccount(false);
-    setAttention(false);
-    setRateUs(false);
-    setPrivacy(true);
+    settings(false, false, false, false, false, true);
   };
+
+  //============================================================================
 
   return (
     <MainSection>
       <div className="Container">
+        {/* //============================================================================ */}
+
         <div className="container-sidebar">
           <div className="sidebar-info">
             <Avatar src={user.userPhoto} className="sidebar-avatar" />
@@ -92,67 +59,29 @@ const ProfilePage = () => {
             </div>
           </div>
           <ul>
-            <Button
-              className="container-sidebar-buttons"
-              variant="text"
-              onClick={showProfile}
-            >
-              <li>Profile</li>
-            </Button>
-            <Button
-              className="container-sidebar-buttons"
-              variant="text"
-              onClick={showResetPassword}
-            >
-              <li>Reset Password</li>
-            </Button>
-            <Button
-              className="container-sidebar-buttons"
-              variant="text"
-              onClick={showDeleteAccount}
-            >
-              <li>Delete Account</li>
-            </Button>
-            <Button
-              className="container-sidebar-buttons"
-              variant="text"
-              onClick={showAttention}
-            >
-              <li>Attention</li>
-            </Button>
-            <Button
-              className="container-sidebar-buttons"
-              variant="text"
-              onClick={showPrivacy}
-            >
-              <li>Privacy</li>
-            </Button>
-            <Button
-              className="container-sidebar-buttons"
-              variant="text"
-              onClick={showRateUs}
-            >
-              <li>Rate Us</li>
-            </Button>
+            <ProfileButton name="profile" button_function={showProfile} />
+            <ProfileButton
+              name="Reset Password"
+              button_function={showResetPassword}
+            />
+            <ProfileButton
+              name="Delete Account"
+              button_function={showDeleteAccount}
+            />
+            <ProfileButton name="Attention" button_function={showAttention} />
+            <ProfileButton name="Privacy" button_function={showPrivacy} />
+            <ProfileButton name="Rate Us" button_function={showRateUs} />
           </ul>
         </div>
         {/* //============================================================================ */}
         <div className="container-info">
-          {profile ? (
-            <Profile />
-          ) : resetPassword ? (
-            <ResetPassword />
-          ) : deleteAccount ? (
-            <DeleteAccount />
-          ) : attention ? (
-            <Attention />
-          ) : rateUs ? (
-            <Rate_Us />
-          ) : privacy ? (
-            <PrivacyComponent />
-          ) : (
-            <></>
-          )}
+          {componentsFunction.map((item, index) => {
+            if (item.condition === true) {
+              return (
+                <React.Fragment key={index}>{item.component}</React.Fragment>
+              );
+            }
+          })}
         </div>
       </div>
       <div class="custom-shape-divider-bottom-1712619373">

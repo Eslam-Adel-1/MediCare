@@ -4,29 +4,18 @@ import styled from "styled-components";
 import Small_Window_ChatBot from "../Pages/Small_Window_ChatBot";
 import ChatBotLogo from "../assets/images/ChatBotLogo.png";
 import Button from "@mui/material/Button";
-import { useNavigate } from "react-router-dom";
+
+//================================================
 
 const MicroChatBot = () => {
   const [chatBotStatus, setChatBotStatus] = useState(false);
 
-  const navigate = useNavigate();
+  //================================================
 
   return (
     <MainSection>
-      {chatBotStatus ? (
-        <Button
-          className="openChat"
-          onClick={() => {
-            navigate("/chatbot");
-          }}
-        >
-          Open Chat
-        </Button>
-      ) : (
-        <></>
-      )}
       <FirstSection>
-        {chatBotStatus ? <Small_Window_ChatBot></Small_Window_ChatBot> : <></>}
+        {chatBotStatus && <Small_Window_ChatBot></Small_Window_ChatBot>}
         <Button className="buttonForOptions">
           <img
             style={{ color: "blue", cursor: "pointer" }}
@@ -40,6 +29,8 @@ const MicroChatBot = () => {
 };
 
 export default MicroChatBot;
+
+//================================================
 
 const MainSection = styled.div`
   position: fixed;
@@ -113,3 +104,5 @@ const FirstSection = styled.div`
     }
   }
 `;
+
+//================================================

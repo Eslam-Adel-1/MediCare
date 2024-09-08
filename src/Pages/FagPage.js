@@ -51,15 +51,15 @@ const FagPage = () => {
         <div className="cards-container">
           <div className="cards">
             {card_info.map((element, index) => {
-              return index !== 2 ? (
-                <HelpCards
-                  key={index}
-                  icon={element.icon}
-                  title={element.title}
-                  description={element.description}
-                />
-              ) : (
-                <></>
+              return (
+                index !== 2 && (
+                  <HelpCards
+                    key={index}
+                    icon={element.icon}
+                    title={element.title}
+                    description={element.description}
+                  />
+                )
               );
             })}
           </div>

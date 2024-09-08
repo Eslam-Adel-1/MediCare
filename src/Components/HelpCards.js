@@ -10,6 +10,8 @@ import {
   switchHealth,
 } from "../features/fag_health_card_show/fag_health_card_showSlice";
 
+//================================================
+
 const Card = ({ icon, title, description }) => {
   const dispatch = useDispatch();
 
@@ -22,6 +24,7 @@ const Card = ({ icon, title, description }) => {
       dispatch(closeAid());
     }
   };
+  //================================================
 
   return (
     <MainSection>
@@ -35,6 +38,8 @@ const Card = ({ icon, title, description }) => {
 };
 
 export default Card;
+
+//================================================
 
 const MainSection = styled.div`
   width: 300px;
@@ -105,3 +110,5 @@ const MainSection = styled.div`
     }
   }
 `;
+
+//================================================

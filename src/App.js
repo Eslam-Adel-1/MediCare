@@ -20,9 +20,9 @@ import NotFoundPage from "./Pages/NotFoundPage";
 import ProtectedRoute from "./Components/ProtectedRoute";
 import NavBarSideBar from "./Components/NavBarSideBar";
 import { useState } from "react";
-import LoginPage2 from "./Pages/LoginPage2";
-import Register2 from "./Pages/Register2";
-import ForgotPassword2 from "./Pages/ForgotPassword2";
+import RegisterPage from "./Pages/RegisterPage";
+import LoginPage from "../src/Pages/LoginPage";
+import ForgotPassword from "./Pages/ForgotPassword";
 import styled from "styled-components";
 
 function App() {
@@ -61,7 +61,7 @@ function App() {
             path="/login"
             element={
               <>
-                <LoginPage2 />
+                <LoginPage />
               </>
             }
           />
@@ -70,7 +70,7 @@ function App() {
             path="/register"
             element={
               <>
-                <Register2 />
+                <RegisterPage />
               </>
             }
           />{" "}
@@ -79,7 +79,7 @@ function App() {
             path="/forgotpassword"
             element={
               <>
-                <ForgotPassword2 />
+                <ForgotPassword />
               </>
             }
           />{" "}

@@ -15,7 +15,6 @@ const Small_Window_ChatBot = () => {
   const { speak } = useSpeechSynthesis();
 
   const ref = useRef();
-
   const navigate = useNavigate();
 
   //=====================================================================
@@ -138,7 +137,6 @@ const MainSection = styled.div`
   height: 335px;
   width: 230px;
   border-radius: 10px;
-  border: 1px #14a3ce solid;
   background-color: white;
   position: fixed;
   bottom: 100px;
@@ -147,9 +145,7 @@ const MainSection = styled.div`
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  -webkit-box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.44);
-  -moz-box-shadow: 0px 3px 10px 0px rgba(0, 0, 0, 0.44);
-  box-shadow: -3px 3px 3px 2px rgba(0, 0, 0, 0.44);
+  box-shadow: -3px 3px 100px 1px rgba(0, 0, 0, 0.44);
   @media (max-height: 450px) {
     display: none;
   }
@@ -162,7 +158,7 @@ const Header = styled.div`
   height: fit-content;
   color: white;
   font-family: myFont;
-  box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
+  background-color: rgb(35, 150, 250);
   display: flex;
   align-items: center;
   justify-content: start;
@@ -173,14 +169,17 @@ const Header = styled.div`
     font-family: myFont;
     font-size: 12px;
     font-weight: 700;
-    color: rgb(35, 150, 250);
-    border: 1px solid rgb(35, 150, 250);
+    color: white;
+    border: none;
+    &:hover {
+      border: none;
+    }
   }
 
   h5 {
     margin: 0px;
     text-transform: capitalize;
-    color: rgb(35, 150, 250);
+    color: white;
     font-size: 17px;
     letter-spacing: 1px;
   }
@@ -190,7 +189,7 @@ const Header = styled.div`
 
 const MessagesSection = styled.div`
   flex: 0.7;
-  margin: 0px 8px 8px 8px;
+  padding: 0px 8px 8px 8px;
   overflow-x: hidden;
   overflow-y: scroll;
 
@@ -202,13 +201,13 @@ const MessagesSection = styled.div`
     display: none;
   }
   .bot {
-    background-color: #e5e5e5;
+    color: white;
+    background-color: rgb(35, 150, 250);
     width: fit-content;
     height: fit-content;
     border-radius: 15px 15px 15px 0px;
-    box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
     margin-right: auto;
-    margin-top: 7px;
+    margin-top: 12px;
     cursor: pointer;
 
     p {
@@ -221,14 +220,13 @@ const MessagesSection = styled.div`
   }
 
   .user {
-    color: white;
-    background-color: rgb(35, 150, 250);
+    color: grey;
+    background-color: white;
     width: fit-content;
     height: fit-content;
     border-radius: 15px 0px 15px 15px;
-    box-shadow: 0px 1px 1px 1px rgba(0, 0, 0, 0.1);
     margin-left: auto;
-    margin-top: 7px;
+    margin-top: 12px;
     cursor: pointer;
 
     p {
@@ -243,13 +241,12 @@ const MessagesSection = styled.div`
 
 const InputSection = styled.div`
   flex: 0.15;
-  background-color: white;
+  background-color: rgb(240, 240, 240);
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 10px;
   padding: 0px 10px;
-  border-top: 1px solid grey;
   input {
     outline: none;
     border: none;

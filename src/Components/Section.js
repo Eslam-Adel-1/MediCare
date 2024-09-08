@@ -1,5 +1,6 @@
-import React from "react";
 import styled from "styled-components";
+
+//================================================
 
 const Section = ({ image, title, description, number }) => {
   return (
@@ -52,6 +53,8 @@ const Section = ({ image, title, description, number }) => {
 };
 
 export default Section;
+
+//================================================
 
 const MainSection = styled.div`
   width: 100%;
@@ -163,3 +166,5 @@ const MainSection = styled.div`
     fill: #ffffff;
   }
 `;
+
+//================================================

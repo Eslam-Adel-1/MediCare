@@ -3,6 +3,8 @@ import RatingComponent from "../Components/RatingComponent";
 import styled from "styled-components";
 import Button from "@mui/material/Button";
 
+//================================================
+
 const UserRatingComponent = ({ setShowRating, showRating }) => {
   return (
     <MainSection>
@@ -27,6 +29,8 @@ const UserRatingComponent = ({ setShowRating, showRating }) => {
 
 export default UserRatingComponent;
 
+//================================================
+
 const MainSection = styled.div`
   display: flex;
   align-items: center;
@@ -44,3 +48,5 @@ const MainSection = styled.div`
     background-color: rgb(35, 150, 250);
   }
 `;
+
+//================================================

@@ -5,26 +5,22 @@ import input_diabetes from "../Arrays/Inputs_Diabetes";
 import DiabetesInfoComponent from "../Components/DiabetesInfoComponent";
 import UserRatingComponent from "../Components/UserRatingComponent";
 import ResultComponent from "../Components/ResultComponent";
-import { useSelector, useDispatch } from "react-redux";
+import CircularProgress from "@mui/material/CircularProgress";
+import toast, { Toaster } from "react-hot-toast";
 import {
-  changeAge,
-  changeBMI,
-  changeBloodPressure,
-  changeDiabetesPedigreeFunction,
-  changeGlucose,
-  changeInsulin,
-  changePregnancies,
-  changeSkinThickness,
-} from "../features/diabetes_Inputs/diabetes_InputsSlice";
+  ApiData,
+  ValidInputs,
+  ChangeVariables,
+} from "../customHooks/diabetes/diabetesHooks";
 
 const Diabetes_Test = () => {
   const [showRating, setShowRating] = useState(false);
   const [counter, setCounter] = useState(1);
   const [apiResponse, setApiResponse] = useState("");
-  const [showEmptyFieldsError, setShowEmptyFiledsError] = useState(false);
-
-  const diabetes_inputs = useSelector((state) => state.diabetes_Inputs.value);
-  const dispatch = useDispatch();
+  const [spinner, setSpinner] = useState(false);
+  const inputValidation = ValidInputs();
+  const dataForApi = ApiData();
+  const diabetesInputReset = ChangeVariables();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -33,55 +29,31 @@ const Diabetes_Test = () => {
   //==================================================================================
 
   const fetchApi = async () => {
-    if (
-      diabetes_inputs.Pregnancies !== (0 || "") &&
-      diabetes_inputs.Age !== (0 || "") &&
-      diabetes_inputs.BloodPressure !== (0 || "") &&
-      diabetes_inputs.SkinThickness !== (0 || "") &&
-      diabetes_inputs.Insulin !== (0 || "") &&
-      diabetes_inputs.BMI !== (0 || "") &&
-      diabetes_inputs.Glucose !== (0 || "") &&
-      diabetes_inputs.DiabetesPedigreeFunction !== (0 || "")
-    ) {
+    if (inputValidation) {
+      setSpinner(true);
       try {
         const resposne = await fetch(process.env.REACT_APP_API_DIABETES, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            Pregnancies: `${diabetes_inputs.Pregnancies}`,
-            Glucose: `${diabetes_inputs.Glucose}`,
-            BloodPressure: `${diabetes_inputs.BloodPressure}`,
-            SkinThickness: `${diabetes_inputs.SkinThickness}`,
-            Insulin: `${diabetes_inputs.Insulin}`,
-            BMI: `${diabetes_inputs.BMI}`,
-            DiabetesPedigreeFunction: `${diabetes_inputs.DiabetesPedigreeFunction}`,
-            Age: `${diabetes_inputs.Age}`,
-          }),
+          body: JSON.stringify(dataForApi),
         });
         const responseResult = await resposne.json();
-        console.log(responseResult);
-        setApiResponse(responseResult);
-        dispatch(changeAge(""));
-        dispatch(changeBloodPressure(""));
-        dispatch(changeGlucose(""));
-        dispatch(changeSkinThickness(""));
-        dispatch(changePregnancies(""));
-        dispatch(changeInsulin(""));
-        dispatch(changeDiabetesPedigreeFunction(""));
-        dispatch(changeBMI(""));
+        setApiResponse(responseResult.msg);
+        diabetesInputReset();
       } catch (err) {
-        console.error(err);
+        toast.error(err.message);
       }
     } else {
-      setShowEmptyFiledsError(!showEmptyFieldsError);
+      toast.error("There are empty fields");
     }
   };
 
   //==================================================================================
 
   useEffect(() => {
+    setSpinner(false);
     const checkCounter = () => {
       if (counter > 1) {
         setTimeout(() => {
@@ -98,25 +70,13 @@ const Diabetes_Test = () => {
 
   return (
     <MainSection>
-      {showEmptyFieldsError ? (
-        <div className="Empty-Fields">
-          <div className="Empty-Fields-Container">
-            <h1> Empty Fields </h1>
-            <p>Please Fill All The Empty Fileds </p>
-            <Button
-              className="button"
-              variant="contained"
-              onClick={() => {
-                setShowEmptyFiledsError(!showEmptyFieldsError);
-              }}
-            >
-              Close
-            </Button>
-          </div>
+      <Toaster />
+      {spinner && (
+        <div className="spinner-container">
+          <CircularProgress className="spinner" />
         </div>
-      ) : (
-        <></>
       )}
+
       {apiResponse.length !== 0 ? (
         <div className="result">
           <div className="result-container">
@@ -218,6 +178,13 @@ const MainSection = styled.div`
   place-content: center;
   background-color: rgb(35, 150, 250);
   overflow: hidden;
+
+  .go3958317564 {
+    font-size: small;
+    font-family: myFont;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
 
   .Empty-Fields {
     position: fixed;

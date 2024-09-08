@@ -1,26 +1,27 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Button from "@mui/material/Button";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import CircularProgress from "@mui/material/CircularProgress";
 import pattern1 from "../assets/images/pattern1.png";
 import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
+import toast, { Toaster } from "react-hot-toast";
+import logo from "../assets/images/logo2.png";
 
 const ForgotPassword = () => {
   const [userEmail, setUserEmail] = useState("");
-  const [requestResponse, setRequestResponse] = useState(false);
-  const [apiResponse, setApiResponse] = useState("");
-
-  const userInfo = useSelector((state) => state.user.value);
   const navigate = useNavigate();
+  const [spinner, setSpinner] = useState(false);
+  const [requestResponse, setRequestResponse] = useState(false);
 
-  console.log(userInfo);
+  //================================================================
 
   const fetchApi = async () => {
     if (userEmail !== "") {
+      setSpinner(true);
       try {
         const response = await fetch(
-          "https://clinicserver-production.up.railway.app/api/users/forgotpassword",
+          "https://clinicserver-production.up.railway.app/api/users/forgot-password",
           {
             method: "POST",
             headers: {
@@ -32,39 +33,38 @@ const ForgotPassword = () => {
           }
         );
         const responseResult = await response.json();
-        console.log(responseResult);
         setUserEmail("");
-        setApiResponse(responseResult);
         setRequestResponse(!requestResponse);
+        toast.error(responseResult.msg);
       } catch (err) {
-        console.error(err);
+        toast.error(err.message);
       }
     } else {
-      console.log("There Are Empty Fields ");
+      toast.error("There Are Empty Fields ");
     }
   };
 
+  useEffect(() => {
+    setSpinner(false);
+  }, [requestResponse]);
+
+  //================================================================
+
   return (
     <MainSection>
-      {requestResponse ? (
-        <div className="request-response">
-          <div className="request-response-container">
-            <h1>Information</h1>
-            {apiResponse?.msg ? <p>{apiResponse.msg}</p> : <p>{apiResponse}</p>}
-            <Button
-              className="SignUp-button"
-              variant="contained"
-              onClick={() => {
-                setRequestResponse(!requestResponse);
-              }}
-            >
-              Close
-            </Button>
-          </div>
+      <div className="medicare-page-logo">
+        <img src={logo} alt="MediCare" />
+        <h3>MediCare</h3>
+      </div>
+      <Toaster />
+      {spinner && (
+        <div className="spinner-container">
+          <CircularProgress className="spinner" />
         </div>
-      ) : (
-        <></>
       )}
+
+      {/* //================================================================ */}
+
       <div className="Container">
         <div className="ContainerRightLeft">
           <div className="right">
@@ -137,6 +137,48 @@ const MainSection = styled.div`
   place-content: center;
   position: relative;
 
+  .medicare-page-logo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    img {
+      height: 37px;
+      object-fit: cover;
+    }
+    h3 {
+      font-family: myFont;
+      font-weight: 900;
+      color: rgba(35, 150, 250);
+    }
+  }
+
+  .go3958317564 {
+    font-size: small;
+    font-family: myFont;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  .spinner-container {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: grid;
+    place-content: center;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 10000;
+    .spinner {
+      color: white;
+    }
+  }
+
   .request-response {
     position: fixed;
     top: 0;
@@ -206,6 +248,9 @@ const MainSection = styled.div`
     flex-direction: row-reverse;
     overflow: hidden;
     border: 1px solid grey;
+    @media (max-width: 710px) {
+      border: none;
+    }
     .right {
       flex: 0.4;
       display: grid;
@@ -221,6 +266,9 @@ const MainSection = styled.div`
       background-position: center;
       background-repeat: no-repeat;
       background-size: cover;
+      @media (max-width: 710px) {
+        display: none;
+      }
 
       .right-container {
         display: flex;

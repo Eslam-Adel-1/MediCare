@@ -7,8 +7,12 @@ import Button from "@mui/material/Button";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 import { useSelector } from "react-redux";
 
+//================================================
+
 const Sidebar = ({}) => {
   const user = useSelector((state) => state.user.value);
+
+  //================================================
 
   return (
     <MainSection>
@@ -37,6 +41,8 @@ const Sidebar = ({}) => {
 };
 
 export default Sidebar;
+
+//================================================
 
 const MainSection = styled.div`
   position: fixed;
@@ -133,3 +139,5 @@ const SecondSection = styled.div`
 const ThirdSection = styled.div`
   margin: 10px 0px;
 `;
+
+//================================================

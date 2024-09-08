@@ -13,10 +13,14 @@ import {
 } from "../features/user/userSlice";
 import MenuIcon from "@mui/icons-material/Menu";
 
+//====================================================================
+
 const Navbar = ({ showSideBar, setShowSideBar }) => {
   const user = useSelector((state) => state.user.value);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  //====================================================================
 
   return (
     <MainSection>
@@ -129,6 +133,8 @@ const Navbar = ({ showSideBar, setShowSideBar }) => {
 
 export default Navbar;
 
+//====================================================================
+
 const MainSection = styled.div`
   display: flex;
   align-items: center;
@@ -240,3 +246,5 @@ const Right = styled.div`
     }
   }
 `;
+
+//====================================================================

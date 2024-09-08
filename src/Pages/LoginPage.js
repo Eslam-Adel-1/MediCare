@@ -1,33 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Button from "@mui/material/Button";
-import XIcon from "@mui/icons-material/X";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import logo from "../assets/images/logo2.png";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import pattern1 from "../assets/images/pattern1.png";
+import CircularProgress from "@mui/material/CircularProgress";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import IconButton from "@mui/material/IconButton";
 import { useNavigate } from "react-router-dom";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   changeUserEmail,
   changeUserId,
   changeUserName,
+  changeUserPhoto,
   changeUserToken,
 } from "../features/user/userSlice";
+import toast, { Toaster } from "react-hot-toast";
+
+//=======================================================================
 
 const LoginPage = () => {
   const [userEmail, setUserEmail] = useState("");
   const [userPassword, setUserPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [requestResponse, setRequestResponse] = useState(false);
-  const [apiResponse, setApiResponse] = useState("");
-
-  const userInfo = useSelector((state) => state.user.value);
+  const [spinner, setSpinner] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+  //=======================================================================
 
   const fetchApi = async () => {
-    if (userEmail !== "" || userPassword !== "") {
+    if (userEmail !== "" && userPassword !== "") {
+      setSpinner(true);
       try {
         const response = await fetch(
           "https://clinicserver-production.up.railway.app/api/users/login",
@@ -43,51 +52,53 @@ const LoginPage = () => {
           }
         );
         const responseResult = await response.json();
-        console.log(responseResult);
-        setUserEmail("");
-        setUserPassword("");
+
         if (responseResult.msg === "The success of the login process") {
           dispatch(changeUserEmail(responseResult.email));
           dispatch(changeUserName(responseResult.name));
           dispatch(changeUserId(responseResult._id));
           dispatch(changeUserToken(responseResult.token));
-          setApiResponse(responseResult);
-          navigate("/");
-        } else {
-          setApiResponse(responseResult);
+          dispatch(changeUserPhoto(responseResult.profilePhoto));
+          toast.success(responseResult.msg);
           setRequestResponse(!requestResponse);
           setUserEmail("");
           setUserPassword("");
+          navigate("/");
+        } else {
+          toast.error(responseResult.msg);
+          setRequestResponse(!requestResponse);
         }
       } catch (err) {
-        console.error(err);
+        toast.error(err.message);
+        setRequestResponse(!requestResponse);
+        setUserEmail("");
+        setUserPassword("");
       }
     } else {
-      console.log("Empty Fields Here");
+      toast.error("There Are Empty Fields");
+      setRequestResponse(!requestResponse);
     }
   };
 
+  useEffect(() => {
+    setSpinner(false);
+  }, [requestResponse]);
+  //=======================================================================
+
   return (
     <MainSection>
-      {requestResponse ? (
-        <div className="request-response">
-          <div className="request-response-container">
-            <h1>Warning</h1>
-            <p>{apiResponse.msg}</p>
-            <Button
-              className="SignUp-button"
-              variant="contained"
-              onClick={() => {
-                setRequestResponse(!requestResponse);
-              }}
-            >
-              Close
-            </Button>
-          </div>
+      <div className="medicare-page-logo">
+        <img src={logo} alt="MediCare" />
+        <h3>MediCare</h3>
+      </div>
+      <Toaster />
+      {spinner && (
+        <div className="spinner-container">
+          <CircularProgress className="spinner" />
         </div>
-      ) : (
-        <></>
       )}
+      {/* //======================================================================= */}
+
       <div className="Container">
         <div className="ContainerRightLeft">
           <div className="right">
@@ -95,7 +106,7 @@ const LoginPage = () => {
               <h2>Welcome Back !</h2>
               <h6>
                 This is MediCare a Website for loving learning and knowing about
-                your diagnosis{" "}
+                your diagnosis
               </h6>
               <Button
                 className="login-button"
@@ -114,11 +125,6 @@ const LoginPage = () => {
               <div className="one-left">
                 {/* //========================================================= */}
                 <h2>Login To Your Account</h2>
-                <div className="one-left-icons">
-                  <XIcon className="icon" />
-                  <FacebookIcon className="icon" />
-                  <LinkedInIcon className="icon" />
-                </div>
               </div>
               {/* //========================================================= */}
               <p>Login To Your Account To Start The Diagnosis</p>
@@ -146,7 +152,7 @@ const LoginPage = () => {
                   </label>
 
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     placeholder="Password"
                     id="password"
                     onChange={(e) => {
@@ -154,8 +160,22 @@ const LoginPage = () => {
                     }}
                     value={userPassword}
                   />
+                  <IconButton
+                    className="Visibility"
+                    aria-label="toggle password visibility"
+                    onClick={handleClickShowPassword}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
                 </div>
                 {/* //============================================================= */}
+                <p
+                  onClick={() => {
+                    navigate("/forgotpassword");
+                  }}
+                >
+                  Forgot Your Password ?
+                </p>
               </div>
               <Button
                 className="SignUp-button"
@@ -176,12 +196,56 @@ const LoginPage = () => {
 
 export default LoginPage;
 
+//==============================================================================
+
 const MainSection = styled.div`
   height: 100vh;
   width: 100vw;
   display: grid;
   place-content: center;
   position: relative;
+
+  .medicare-page-logo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    img {
+      height: 37px;
+      object-fit: cover;
+    }
+    h3 {
+      font-family: myFont;
+      font-weight: 900;
+      color: rgba(35, 150, 250);
+    }
+  }
+
+  .go3958317564 {
+    font-size: small;
+    font-family: myFont;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  .spinner-container {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    display: grid;
+    place-content: center;
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 10000;
+    .spinner {
+      color: white;
+    }
+  }
 
   .request-response {
     position: fixed;
@@ -192,7 +256,7 @@ const MainSection = styled.div`
     background-color: rgba(0, 0, 0, 0.6);
     display: grid;
     place-content: center;
-    z-index: 99999999;
+    z-index: 1000;
     .request-response-container {
       display: flex;
       align-items: center;
@@ -243,6 +307,9 @@ const MainSection = styled.div`
     flex-direction: row-reverse;
     overflow: hidden;
     border: 1px solid grey;
+    @media (max-width: 710px) {
+      border: none;
+    }
     .right {
       flex: 0.4;
       display: grid;
@@ -258,13 +325,16 @@ const MainSection = styled.div`
       background-position: center;
       background-repeat: no-repeat;
       background-size: cover;
+      @media (max-width: 710px) {
+        display: none;
+      }
 
       .right-container {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        font-family: myFont;
         padding: 15px;
         color: white;
         text-align: center;
@@ -291,7 +361,7 @@ const MainSection = styled.div`
     }
     .left {
       flex: 0.6;
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      font-family: myFont;
       color: #14a3ce;
       background-color: white;
       height: 100%;
@@ -319,13 +389,14 @@ const MainSection = styled.div`
           .input-s {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
             background-color: #ecf1f2;
-            padding: 3px 15px;
+            padding: 3px 10px;
+            box-sizing: border-box;
             border-radius: 15px;
+            width: 100%;
             .icon-form {
               color: #b2b2b2;
+              margin-right: 10px;
             }
             input {
               outline: none;
@@ -333,6 +404,15 @@ const MainSection = styled.div`
               background: transparent;
             }
           }
+        }
+
+        .Visibility {
+          width: fit-content;
+          height: fit-content;
+          background: transparent;
+          padding: 0px;
+          border: 0px;
+          color: grey;
         }
         p {
           font-size: 12px;

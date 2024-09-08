@@ -5,29 +5,25 @@ import input_breast_cancer from "../Arrays/Inputs_Breast_Cancer";
 import BreastCancerInfoComponent from "../Components/BreastCancerInfoComponent";
 import UserRatingComponent from "../Components/UserRatingComponent";
 import ResultComponent from "../Components/ResultComponent";
-import { useSelector, useDispatch } from "react-redux";
+import CircularProgress from "@mui/material/CircularProgress";
+import toast, { Toaster } from "react-hot-toast";
 import {
-  changeBare_nuclei,
-  changeBland_chromatin,
-  changeClump_thickness,
-  changeMarginal_adhesion,
-  changeMitoses,
-  changeNormal_nucleoli,
-  changeSingle_epithelial_size,
-  changeUniform_cell_shape,
-  changeUniform_cell_size,
-} from "../features/breast_cancer_Inputs/breast_cancer_InputsSlice";
+  ApiData,
+  ValidInputs,
+  ChangeVariables,
+} from "../customHooks/breastCancer/breastCancerHooks";
+
+//==================================================================================
 
 const Diabetes_Test = () => {
   const [showRating, setShowRating] = useState(false);
+  const [spinner, setSpinner] = useState(false);
   const [counter, setCounter] = useState(1);
   const [apiResponse, setApiResponse] = useState("");
   const [showEmptyFieldsError, setShowEmptyFiledsError] = useState(false);
-
-  const breast_cancer_inputs = useSelector(
-    (state) => state.breast_cancer_Inputs.value
-  );
-  const dispatch = useDispatch();
+  const inputValidation = ValidInputs();
+  const dataForApi = ApiData();
+  const diabetesInputReset = ChangeVariables();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -36,58 +32,32 @@ const Diabetes_Test = () => {
   //==================================================================================
 
   const fetchApi = async () => {
-    if (
-      breast_cancer_inputs.clump_thickness !== (0 || "") &&
-      breast_cancer_inputs.uniform_cell_shape !== (0 || "") &&
-      breast_cancer_inputs.uniform_cell_size !== (0 || "") &&
-      breast_cancer_inputs.marginal_adhesion !== (0 || "") &&
-      breast_cancer_inputs.single_epithelial_size !== (0 || "") &&
-      breast_cancer_inputs.bare_nuclei !== (0 || "") &&
-      breast_cancer_inputs.bland_chromatin !== (0 || "") &&
-      breast_cancer_inputs.normal_nucleoli !== (0 || "") &&
-      breast_cancer_inputs.mitoses !== (0 || "")
-    ) {
+    if (inputValidation) {
+      setSpinner(true);
       try {
         const resposne = await fetch(process.env.REACT_APP_API_BREAST_CANCER, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            clump_thickness: `${breast_cancer_inputs.clump_thickness}`,
-            uniform_cell_size: `${breast_cancer_inputs.uniform_cell_size}`,
-            uniform_cell_shape: `${breast_cancer_inputs.uniform_cell_shape}`,
-            marginal_adhesion: `${breast_cancer_inputs.marginal_adhesion}`,
-            single_epithelial_size: `${breast_cancer_inputs.single_epithelial_size}`,
-            bare_nuclei: `${breast_cancer_inputs.bare_nuclei}`,
-            bland_chromatin: `${breast_cancer_inputs.bland_chromatin}`,
-            normal_nucleoli: `${breast_cancer_inputs.normal_nucleoli}`,
-            mitoses: `${breast_cancer_inputs.mitoses}`,
-          }),
+          body: JSON.stringify(dataForApi),
         });
         const responseResult = await resposne.json();
         console.log(responseResult);
         setApiResponse(responseResult);
-        dispatch(changeBare_nuclei(""));
-        dispatch(changeBland_chromatin(""));
-        dispatch(changeClump_thickness(""));
-        dispatch(changeMarginal_adhesion(""));
-        dispatch(changeMitoses(""));
-        dispatch(changeNormal_nucleoli(""));
-        dispatch(changeSingle_epithelial_size(""));
-        dispatch(changeUniform_cell_shape(""));
-        dispatch(changeUniform_cell_size(""));
+        diabetesInputReset();
       } catch (err) {
-        console.console(err);
+        toast.error(err.message);
       }
     } else {
-      setShowEmptyFiledsError(!showEmptyFieldsError);
+      toast.error("There are empty fields");
     }
   };
 
   //==================================================================================
 
   useEffect(() => {
+    setSpinner(false);
     const checkCounter = () => {
       if (counter > 1) {
         setTimeout(() => {
@@ -100,27 +70,19 @@ const Diabetes_Test = () => {
     checkCounter();
   }, [apiResponse]);
 
+  //==================================================================================
+
   return (
     <MainSection>
-      {showEmptyFieldsError ? (
-        <div className="Empty-Fields">
-          <div className="Empty-Fields-Container">
-            <h1> Empty Fields </h1>
-            <p>Please Fill All The Empty Fileds </p>
-            <Button
-              className="button"
-              variant="contained"
-              onClick={() => {
-                setShowEmptyFiledsError(!showEmptyFieldsError);
-              }}
-            >
-              Close
-            </Button>
-          </div>
+      <Toaster />
+      {spinner && (
+        <div className="spinner-container">
+          <CircularProgress className="spinner" />
         </div>
-      ) : (
-        <></>
       )}
+
+      {/* //================================================================================== */}
+
       {apiResponse.length !== 0 ? (
         <div className="result">
           <div className="result-container">
@@ -160,6 +122,9 @@ const Diabetes_Test = () => {
             />
           );
         })}
+
+        {/* //================================================================================== */}
+
         <div className="predict-button">
           <Button
             className="button"
@@ -172,6 +137,9 @@ const Diabetes_Test = () => {
           </Button>
         </div>
       </div>
+
+      {/* //================================================================================== */}
+
       <div class="custom-shape-divider-bottom-1712619373">
         <svg
           data-name="Layer 1"
@@ -224,6 +192,13 @@ const MainSection = styled.div`
   overflow: hidden;
   padding-top: 50px;
   padding-bottom: 50px;
+
+  .go3958317564 {
+    font-size: small;
+    font-family: myFont;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
 
   .Empty-Fields {
     position: fixed;

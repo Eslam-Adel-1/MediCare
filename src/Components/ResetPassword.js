@@ -11,6 +11,8 @@ import Button from "@mui/material/Button";
 import { useSelector } from "react-redux";
 import CircularProgress from "@mui/material/CircularProgress";
 
+//================================================
+
 const ResetPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPassword2, setShowPassword2] = useState(false);
@@ -31,8 +33,6 @@ const ResetPassword = () => {
     event.preventDefault();
   };
 
-  console.log(userPassword);
-  console.log(user);
   //======================================================================
   const fetchApi = async () => {
     if (
@@ -85,12 +85,10 @@ const ResetPassword = () => {
 
   return (
     <MainSection>
-      {spinner ? (
+      {spinner && (
         <div className="spinner-container">
           <CircularProgress />
         </div>
-      ) : (
-        <></>
       )}
       {requestResponse ? (
         <div className="request-response">
@@ -120,11 +118,11 @@ const ResetPassword = () => {
         <div className="reset-password-inputs">
           <p> Type Your Old Password</p>
           <FormControl sx={{ m: 1, width: "20ch" }} variant="outlined">
-            <InputLabel htmlFor="outlined-adornment-password">
+            <InputLabel htmlFor="outlined-adornment-password3">
               Old Password
             </InputLabel>
             <OutlinedInput
-              id="outlined-adornment-password"
+              id="outlined-adornment-password3"
               type={showPassword ? "text" : "password"}
               value={userPassword}
               onChange={(e) => {
@@ -180,11 +178,11 @@ const ResetPassword = () => {
         <div className="reset-password-inputs">
           <p>Type New Password Again</p>
           <FormControl sx={{ m: 1, width: "20ch" }} variant="outlined">
-            <InputLabel htmlFor="outlined-adornment-password">
+            <InputLabel htmlFor="outlined-adornment-password2">
               Confirn Password
             </InputLabel>
             <OutlinedInput
-              id="outlined-adornment-password"
+              id="outlined-adornment-password2"
               type={showPassword3 ? "text" : "password"}
               value={userPassword3}
               onChange={(e) => {
@@ -221,6 +219,8 @@ const ResetPassword = () => {
 };
 
 export default ResetPassword;
+
+//================================================
 
 const MainSection = styled.div`
   .spinner-container {
@@ -270,3 +270,5 @@ const MainSection = styled.div`
     }
   }
 `;
+
+//================================================

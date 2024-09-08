@@ -15,7 +15,6 @@ const DeleteAccount = () => {
   const userInfo = useSelector((state) => state.user.value);
   const [apiResponse, setApiResponse] = useState("");
   const [requestResponse, setRequestResponse] = useState(false);
-
   const [spinner, setSpinner] = useState(false);
   const dispatch = useDispatch();
 
@@ -46,18 +45,16 @@ const DeleteAccount = () => {
 
   return (
     <MainSection>
-      {spinner ? (
+      {spinner && (
         <div className="spinner-container">
           <CircularProgress className="spinner" />
         </div>
-      ) : (
-        <></>
       )}
-      {requestResponse ? (
+      {requestResponse && (
         <div className="request-response">
           <div className="request-response-container">
             <h1>Information</h1>
-            {apiResponse ? <p>{apiResponse.msg}</p> : <></>}
+            {apiResponse && <p>{apiResponse.msg}</p>}
             <Button
               className="SignUp-button"
               variant="contained"
@@ -69,8 +66,6 @@ const DeleteAccount = () => {
             </Button>
           </div>
         </div>
-      ) : (
-        <></>
       )}
       <div className="delete-account">
         <h1>Warning</h1>

@@ -14,10 +14,14 @@ import {
   changeUserPhoto,
 } from "../features/user/userSlice";
 
+//================================================
+
 const SidebarChatBot = ({ showSideBar, setShowSideBar }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
+
+  //================================================
 
   return (
     <MainSection showSideBar={showSideBar}>
@@ -57,6 +61,8 @@ const SidebarChatBot = ({ showSideBar, setShowSideBar }) => {
 };
 
 export default SidebarChatBot;
+
+//================================================
 
 const MainSection = styled.div`
   flex: 0.25;
@@ -180,3 +186,5 @@ const ThirdSection = styled.div`
   margin: 10px 0px;
   flex: 0.8;
 `;
+
+//================================================

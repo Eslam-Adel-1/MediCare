@@ -5,102 +5,57 @@ import inputs_heartAttack from "../Arrays/Inputs_HeartAttack";
 import HeartAttackInfoComponent from "../Components/HeartAttackInfoComponent";
 import UserRatingComponent from "../Components/UserRatingComponent";
 import ResultComponent from "../Components/ResultComponent";
-import { useSelector, useDispatch } from "react-redux";
 import {
-  changeAge,
-  changeCa,
-  changeChol,
-  changeCp,
-  changeExang,
-  changeFbs,
-  changeOldpeak,
-  changeRestecg,
-  changeSex,
-  changeSlope,
-  changeThal,
-  changeThalach,
-} from "../features/heart_attack_Inputs/heart_attack_InputsSlice";
+  ValidInputs,
+  ApiData,
+  ChangeVariables,
+} from "../customHooks/heartAttack/HeartAttackHooks";
+import CircularProgress from "@mui/material/CircularProgress";
+import toast, { Toaster } from "react-hot-toast";
+
+//==================================================================================
 
 const Heart_Attack_Test = () => {
   const [showRating, setShowRating] = useState(false);
   const [counter, setCounter] = useState(1);
   const [apiResponse, setApiResponse] = useState("");
-  const [showEmptyFieldsError, setShowEmptyFiledsError] = useState(false);
-
-  const heart_attack_inputs = useSelector(
-    (state) => state.heart_attack_Inputs.value
-  );
-  const dispatch = useDispatch();
+  const [spinner, setSpinner] = useState(false);
+  const inputValidation = ValidInputs();
+  const dataForApi = ApiData();
+  const heartAttackInputReset = ChangeVariables();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
+
   //==================================================================================
 
   const fetchApi = async () => {
-    if (
-      heart_attack_inputs.Age !== (0 || "") &&
-      heart_attack_inputs.Sex !== (0 || "") &&
-      heart_attack_inputs.Cp !== (0 || "") &&
-      heart_attack_inputs.Trestbps !== (0 || "") &&
-      heart_attack_inputs.Chol !== (0 || "") &&
-      heart_attack_inputs.Fbs !== (0 || "") &&
-      heart_attack_inputs.Restecg !== (0 || "") &&
-      heart_attack_inputs.Thalach !== (0 || "") &&
-      heart_attack_inputs.Exang !== (0 || "") &&
-      heart_attack_inputs.Oldpeak !== (0 || "") &&
-      heart_attack_inputs.Slope !== (0 || "") &&
-      heart_attack_inputs.Ca !== (0 || "") &&
-      heart_attack_inputs.Thal !== (0 || "")
-    ) {
+    if (inputValidation) {
+      setSpinner(true);
       try {
         const resposne = await fetch(process.env.REACT_APP_API_HEART_ATTACK, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            Age: `${heart_attack_inputs.Age}`,
-            Sex: `${heart_attack_inputs.Sex}`,
-            Cp: `${heart_attack_inputs.Cp}`,
-            Trestbps: `${heart_attack_inputs.Trestbps}`,
-            Chol: `${heart_attack_inputs.Chol}`,
-            Fbs: `${heart_attack_inputs.Fbs}`,
-            Restecg: `${heart_attack_inputs.Restecg}`,
-            Thalach: `${heart_attack_inputs.Thalach}`,
-            Exang: `${heart_attack_inputs.Exang}`,
-            Oldpeak: `${heart_attack_inputs.Oldpeak}`,
-            Slope: `${heart_attack_inputs.Slope}`,
-            Ca: `${heart_attack_inputs.Ca}`,
-            Thal: `${heart_attack_inputs.Thal}`,
-          }),
+          body: JSON.stringify(dataForApi),
         });
         const responseResult = await resposne.json();
-        console.log(responseResult);
         setApiResponse(responseResult);
-        dispatch(changeAge(""));
-        dispatch(changeCa(""));
-        dispatch(changeChol(""));
-        dispatch(changeCp(""));
-        dispatch(changeExang(""));
-        dispatch(changeFbs(""));
-        dispatch(changeOldpeak(""));
-        dispatch(changeRestecg(""));
-        dispatch(changeSex(""));
-        dispatch(changeSlope(""));
-        dispatch(changeThal(""));
-        dispatch(changeThalach(""));
+        heartAttackInputReset();
       } catch (err) {
-        console.error(err);
+        toast.error(err.message);
       }
     } else {
-      setShowEmptyFiledsError(!showEmptyFieldsError);
+      toast.error("There are empty fields");
     }
   };
 
   //==================================================================================
 
   useEffect(() => {
+    setSpinner(false);
     const checkCounter = () => {
       if (counter > 1) {
         setTimeout(() => {
@@ -113,29 +68,17 @@ const Heart_Attack_Test = () => {
     checkCounter();
   }, [apiResponse]);
 
-  //===================================================
+  //==================================================================================
 
   return (
     <MainSection>
-      {showEmptyFieldsError ? (
-        <div className="Empty-Fields">
-          <div className="Empty-Fields-Container">
-            <h1> Empty Fields </h1>
-            <p>Please Fill All The Empty Fileds </p>
-            <Button
-              className="button"
-              variant="contained"
-              onClick={() => {
-                setShowEmptyFiledsError(!showEmptyFieldsError);
-              }}
-            >
-              Close
-            </Button>
-          </div>
+      <Toaster />
+      {spinner && (
+        <div className="spinner-container">
+          <CircularProgress className="spinner" />
         </div>
-      ) : (
-        <></>
       )}
+
       {apiResponse.length !== 0 ? (
         <div className="result">
           <div className="result-container">
@@ -188,6 +131,9 @@ const Heart_Attack_Test = () => {
           </Button>
         </div>
       </div>
+
+      {/* //============================================================== */}
+
       <div class="custom-shape-divider-bottom-1712619373">
         <svg
           data-name="Layer 1"
@@ -240,6 +186,13 @@ const MainSection = styled.div`
   overflow: hidden;
   padding-top: 50px;
   padding-bottom: 50px;
+
+  .go3958317564 {
+    font-size: small;
+    font-family: myFont;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
 
   .Empty-Fields {
     position: fixed;
@@ -302,7 +255,6 @@ const MainSection = styled.div`
         display: flex;
         align-items: center;
         justify-content: center;
-        /* flex-direction: column; */
         div {
           display: flex;
           align-items: center;

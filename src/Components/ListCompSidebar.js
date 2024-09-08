@@ -7,6 +7,8 @@ import QuizIcon from "@mui/icons-material/Quiz";
 import PeopleIcon from "@mui/icons-material/People";
 
 const ListComponent = () => {
+  //================================================
+
   return (
     <MainSection>
       <li>
@@ -35,6 +37,8 @@ const ListComponent = () => {
 
 export default ListComponent;
 
+//================================================
+
 const MainSection = styled.ul`
   list-style-type: none;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
@@ -58,3 +62,5 @@ const MainSection = styled.ul`
     margin-bottom: 10px;
   }
 `;
+
+//================================================

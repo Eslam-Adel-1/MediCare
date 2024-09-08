@@ -3,138 +3,48 @@ import styled from "styled-components";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import InfoIcon from "@mui/icons-material/Info";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  changeD2,
-  changeDFA,
-  changeHNR,
-  changeJitter_DDP,
-  changeMDVP_APQ,
-  changeMDVP_Fhi_HZ,
-  changeMDVP_Flo_HZ,
-  changeMDVP_Jitter_Abs,
-  changeMDVP_Jitter_percentage,
-  changeMDVP_PPQ,
-  changeMDVP_RAP,
-  changeMDVP_Shimmer,
-  changeMDVP_Shimmer_dB,
-  changeMDVP_fo_HZ,
-  changeNHR,
-  changePPE,
-  changeRPDE,
-  changeShimmer_APQ3,
-  changeShimmer_APQ5,
-  changeShimmer_DDA,
-  changeSpread1,
-  changeSpread2,
-} from "../features/parkinson_Inputs/parkinson_InputsSlice";
+import { useSelector } from "react-redux";
+import { HandleChangeParkinson } from "../customHooks/parkinson/ParkinsonHooks";
 
 const ParkinsonInfoComponent = ({ name, information }) => {
   const parkinson_inputs = useSelector((state) => state.parkinson_Inputs.value);
   const [showInfo, setShowInfo] = useState(false);
-  const dispatch = useDispatch();
+  const { validationFunction, validationFunction2 } = HandleChangeParkinson();
 
-  console.log(parkinson_inputs);
+  //======================================================================
 
   const handleChange = (e) => {
-    if (name === "MDVP_fo_HZ") {
-      dispatch(changeMDVP_fo_HZ(Math.floor(e.target.value)));
-    } else if (name === "MDVP_Fhi_HZ") {
-      dispatch(changeMDVP_Fhi_HZ(Math.floor(e.target.value)));
-    } else if (name === "MDVP_Flo_HZ") {
-      dispatch(changeMDVP_Flo_HZ(Math.floor(e.target.value)));
-    } else if (name === "MDVP_Jitter_percentage") {
-      dispatch(changeMDVP_Jitter_percentage(Math.floor(e.target.value)));
-    } else if (name === "MDVP_Jitter_Abs") {
-      dispatch(changeMDVP_Jitter_Abs(Math.floor(e.target.value)));
-    } else if (name === "MDVP_RAP") {
-      dispatch(changeMDVP_RAP(Math.floor(e.target.value)));
-    } else if (name === "MDVP_PPQ") {
-      dispatch(changeMDVP_PPQ(Math.floor(e.target.value)));
-    } else if (name === "Jitter_DDP") {
-      dispatch(changeJitter_DDP(Math.floor(e.target.value)));
-    } else if (name === "MDVP_Shimmer") {
-      dispatch(changeMDVP_Shimmer(Math.floor(e.target.value)));
-    } else if (name === "MDVP_Shimmer_dB") {
-      dispatch(changeMDVP_Shimmer_dB(Math.floor(e.target.value)));
-    } else if (name === "Shimmer_APQ3") {
-      dispatch(changeShimmer_APQ3(Math.floor(e.target.value)));
-    } else if (name === "Shimmer_APQ5") {
-      dispatch(changeShimmer_APQ5(Math.floor(e.target.value)));
-    } else if (name === "MDVP_APQ") {
-      dispatch(changeMDVP_APQ(Math.floor(e.target.value)));
-    } else if (name === "Shimmer_DDA") {
-      dispatch(changeShimmer_DDA(Math.floor(e.target.value)));
-    } else if (name === "NHR") {
-      dispatch(changeNHR(Math.floor(e.target.value)));
-    } else if (name === "HNR") {
-      dispatch(changeHNR(Math.floor(e.target.value)));
-    } else if (name === "RPDE") {
-      dispatch(changeRPDE(Math.floor(e.target.value)));
-    } else if (name === "DFA") {
-      dispatch(changeDFA(Math.floor(e.target.value)));
-    } else if (name === "spread1") {
-      dispatch(changeSpread1(Math.floor(e.target.value)));
-    } else if (name === "spread2") {
-      dispatch(changeSpread2(Math.floor(e.target.value)));
-    } else if (name === "D2") {
-      dispatch(changeD2(Math.floor(e.target.value)));
-    } else if (name === "PPE") {
-      dispatch(changePPE(Math.floor(e.target.value)));
-    }
+    const handleChangeEvent = validationFunction(name);
+    handleChangeEvent.forEach((item) => {
+      if (item.condition) {
+        item.action(e);
+      }
+    });
   };
 
   const handleChange2 = () => {
-    if (parkinson_inputs.MDVP_fo_HZ > 999) {
-      dispatch(changeMDVP_fo_HZ(999));
-    } else if (parkinson_inputs.MDVP_Fhi_HZ > 999) {
-      dispatch(changeMDVP_Fhi_HZ(999));
-    } else if (parkinson_inputs.MDVP_Flo_HZ > 999) {
-      dispatch(changeMDVP_Flo_HZ(999));
-    } else if (parkinson_inputs.MDVP_Jitter_percentage > 999) {
-      dispatch(changeMDVP_Jitter_percentage(999));
-    } else if (parkinson_inputs.MDVP_Jitter_Abs > 999) {
-      dispatch(changeMDVP_Jitter_Abs(999));
-    } else if (parkinson_inputs.MDVP_RAP > 999) {
-      dispatch(changeMDVP_RAP(999));
-    } else if (parkinson_inputs.MDVP_PPQ > 999) {
-      dispatch(changeMDVP_PPQ(999));
-    } else if (parkinson_inputs.Jitter_DDP > 999) {
-      dispatch(changeJitter_DDP(999));
-    } else if (parkinson_inputs.MDVP_Shimmer > 999) {
-      dispatch(changeMDVP_Shimmer(999));
-    } else if (parkinson_inputs.MDVP_Shimmer_dB > 999) {
-      dispatch(changeMDVP_Shimmer_dB(999));
-    } else if (parkinson_inputs.Shimmer_APQ3 > 999) {
-      dispatch(changeShimmer_APQ3(999));
-    } else if (parkinson_inputs.Shimmer_APQ5 > 999) {
-      dispatch(changeShimmer_APQ5(999));
-    } else if (parkinson_inputs.MDVP_APQ > 999) {
-      dispatch(changeMDVP_APQ(999));
-    } else if (parkinson_inputs.Shimmer_DDA > 999) {
-      dispatch(changeShimmer_DDA(999));
-    } else if (parkinson_inputs.NHR > 999) {
-      dispatch(changeNHR(999));
-    } else if (parkinson_inputs.HNR > 999) {
-      dispatch(changeHNR(999));
-    } else if (parkinson_inputs.RPDE > 999) {
-      dispatch(changeRPDE(999));
-    } else if (parkinson_inputs.DFA > 999) {
-      dispatch(changeDFA(999));
-    } else if (parkinson_inputs.spread1 > 999) {
-      dispatch(changeSpread1(999));
-    } else if (parkinson_inputs.spread2 > 999) {
-      dispatch(changeSpread2(999));
-    } else if (parkinson_inputs.D2 > 999) {
-      dispatch(changeD2(999));
-    } else if (parkinson_inputs.PPE > 999) {
-      dispatch(changePPE(999));
+    const handleChangeEvent = validationFunction2();
+    handleChangeEvent.forEach((item) => {
+      if (item.condition) {
+        item.action();
+      }
+    });
+  };
+
+  const checkValue = () => {
+    const changeValue = validationFunction(name);
+    for (let i = 0; i < changeValue.length; i++) {
+      if (changeValue[i]?.condition) {
+        return changeValue[i]?.action2;
+      }
     }
   };
 
   useEffect(() => {
     handleChange2();
   }, [parkinson_inputs]);
+
+  //======================================================================
 
   return (
     <MainSection showInfo={showInfo}>
@@ -152,55 +62,7 @@ const ParkinsonInfoComponent = ({ name, information }) => {
             handleChange2();
           }}
           onChange={(e) => handleChange(e)}
-          value={
-            name === "MDVP_fo_HZ" ? (
-              parkinson_inputs.MDVP_fo_HZ
-            ) : name === "MDVP_Fhi_HZ" ? (
-              parkinson_inputs.MDVP_Fhi_HZ
-            ) : name === "MDVP_Flo_HZ" ? (
-              parkinson_inputs.MDVP_Flo_HZ
-            ) : name === "MDVP_Jitter_percentage" ? (
-              parkinson_inputs.MDVP_Jitter_percentage
-            ) : name === "MDVP_Jitter_Abs" ? (
-              parkinson_inputs.MDVP_Jitter_Abs
-            ) : name === "MDVP_RAP" ? (
-              parkinson_inputs.MDVP_RAP
-            ) : name === "MDVP_PPQ" ? (
-              parkinson_inputs.MDVP_PPQ
-            ) : name === "Jitter_DDP" ? (
-              parkinson_inputs.Jitter_DDP
-            ) : name === "MDVP_Shimmer" ? (
-              parkinson_inputs.MDVP_Shimmer
-            ) : name === "MDVP_Shimmer_dB" ? (
-              parkinson_inputs.MDVP_Shimmer_dB
-            ) : name === "Shimmer_APQ3" ? (
-              parkinson_inputs.Shimmer_APQ3
-            ) : name === "Shimmer_APQ5" ? (
-              parkinson_inputs.Shimmer_APQ5
-            ) : name === "MDVP_APQ" ? (
-              parkinson_inputs.MDVP_APQ
-            ) : name === "Shimmer_DDA" ? (
-              parkinson_inputs.Shimmer_DDA
-            ) : name === "HNR" ? (
-              parkinson_inputs.HNR
-            ) : name === "RPDE" ? (
-              parkinson_inputs.RPDE
-            ) : name === "DFA" ? (
-              parkinson_inputs.DFA
-            ) : name === "spread1" ? (
-              parkinson_inputs.spread1
-            ) : name === "spread2" ? (
-              parkinson_inputs.spread2
-            ) : name === "D2" ? (
-              parkinson_inputs.D2
-            ) : name === "PPE" ? (
-              parkinson_inputs.PPE
-            ) : name === "NHR" ? (
-              parkinson_inputs.NHR
-            ) : (
-              <></>
-            )
-          }
+          value={checkValue()}
         />
 
         <Button
@@ -236,6 +98,8 @@ const ParkinsonInfoComponent = ({ name, information }) => {
     </MainSection>
   );
 };
+
+//======================================================================
 
 export default ParkinsonInfoComponent;
 
@@ -299,3 +163,5 @@ const MainSection = styled.div`
     }
   }
 `;
+
+//======================================================================

@@ -9,6 +9,7 @@ import FormControl from "@mui/material/FormControl";
 import { useDispatch, useSelector } from "react-redux";
 import CircularProgress from "@mui/material/CircularProgress";
 import { changeUserName, changeUserPhoto } from "../features/user/userSlice";
+import toast, { Toaster } from "react-hot-toast";
 
 const Profile = () => {
   //===========================================================
@@ -18,7 +19,6 @@ const Profile = () => {
   const [newName, setNewName] = useState("");
   const [photo, setPhoto] = useState(null);
   const [requestResponse, setRequestResponse] = useState(false);
-  const [apiResponse, setApiResponse] = useState("");
   const [spinner, setSpinner] = useState(false);
   const dispatch = useDispatch();
 
@@ -41,19 +41,18 @@ const Profile = () => {
           }
         );
         const responseResult = await response.json();
-        console.log(responseResult);
-        setApiResponse(responseResult);
         setRequestResponse(!requestResponse);
         if (responseResult.msg === "update succesfully") {
+          toast.success(responseResult.msg);
           dispatch(changeUserName(newName));
         }
+        toast.error(responseResult.msg);
         setNewName("");
       } catch (err) {
-        console.error(err);
+        toast.error(err.message);
       }
     } else {
-      setApiResponse("The Field Is Empty");
-      setRequestResponse(!requestResponse);
+      toast.error("The Field Is Empty");
     }
   };
 
@@ -72,53 +71,33 @@ const Profile = () => {
           }
         );
         const responseResult = await response.json();
-        console.log(responseResult);
-        setApiResponse(responseResult);
+        toast.success(responseResult.msg);
         setRequestResponse(!requestResponse);
         dispatch(changeUserPhoto(responseResult.profilePhoto.url));
       } catch (err) {
-        console.error(err);
+        toast.error(err.message);
       }
     } else {
-      setApiResponse("An Error Occured");
+      toast.error("An Error Occured");
       setRequestResponse(!requestResponse);
     }
   };
 
   useEffect(() => {
     setSpinner(false);
-  }, [apiResponse]);
+  }, [requestResponse]);
 
   //===========================================================
 
   return (
     <MainSection>
-      {spinner ? (
+      <Toaster />
+      {spinner && (
         <div className="spinner-container">
           <CircularProgress className="spinner" />
         </div>
-      ) : (
-        <></>
       )}
-      {requestResponse ? (
-        <div className="request-response">
-          <div className="request-response-container">
-            <h1>Information</h1>
-            {apiResponse?.msg ? <p>{apiResponse.msg}</p> : <p>{apiResponse}</p>}
-            <Button
-              className="SignUp-button"
-              variant="contained"
-              onClick={() => {
-                setRequestResponse(!requestResponse);
-              }}
-            >
-              Close
-            </Button>
-          </div>
-        </div>
-      ) : (
-        <></>
-      )}
+
       <div className="Profile">
         <Avatar src={user.userPhoto} className="Profile-avatar" />
         <div className="profile-text">
@@ -158,7 +137,7 @@ const Profile = () => {
         </Button>
       </div>
       {/* //=========================================================== */}
-      {showChangeName ? (
+      {showChangeName && (
         <div className="ChangeNameContainer">
           <FormControl sx={{ m: 1, width: "20ch" }} variant="outlined">
             <InputLabel htmlFor="outlined-adornment-password">
@@ -186,10 +165,8 @@ const Profile = () => {
             Confirm
           </Button>
         </div>
-      ) : (
-        <></>
       )}
-      {photo ? (
+      {photo && (
         <div className="upload-Photo-Container">
           <Button
             className="Upload-Photo"
@@ -201,17 +178,25 @@ const Profile = () => {
             Upload Photo
           </Button>
         </div>
-      ) : (
-        <></>
       )}
     </MainSection>
   );
 };
 
+//====================================================================
+
 export default Profile;
 
 const MainSection = styled.div`
   margin-top: 20px;
+
+  .go3958317564 {
+    font-size: small;
+    font-family: myFont;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
   .spinner-container {
     position: fixed;
     top: 0;
@@ -271,3 +256,5 @@ const MainSection = styled.div`
     }
   }
 `;
+
+//====================================================================

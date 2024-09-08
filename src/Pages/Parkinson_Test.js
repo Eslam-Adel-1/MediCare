@@ -4,41 +4,24 @@ import Button from "@mui/material/Button";
 import inputs_parkinson from "../Arrays/Inputs_Parkinson";
 import UserRatingComponent from "../Components/UserRatingComponent";
 import ResultComponent from "../Components/ResultComponent";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  changeD2,
-  changeDFA,
-  changeHNR,
-  changeJitter_DDP,
-  changeMDVP_APQ,
-  changeMDVP_Fhi_HZ,
-  changeMDVP_Flo_HZ,
-  changeMDVP_Jitter_Abs,
-  changeMDVP_Jitter_percentage,
-  changeMDVP_PPQ,
-  changeMDVP_RAP,
-  changeMDVP_Shimmer,
-  changeMDVP_Shimmer_dB,
-  changeMDVP_fo_HZ,
-  changeNHR,
-  changePPE,
-  changeRPDE,
-  changeShimmer_APQ3,
-  changeShimmer_APQ5,
-  changeShimmer_DDA,
-  changeSpread1,
-  changeSpread2,
-} from "../features/parkinson_Inputs/parkinson_InputsSlice";
+import CircularProgress from "@mui/material/CircularProgress";
+import toast, { Toaster } from "react-hot-toast";
 import ParkinsonInfoComponent from "../Components/ParkinsonInfoComponent";
+import {
+  ApiData,
+  ValidInputs,
+  ChangeVariables,
+} from "../customHooks/parkinson/ParkinsonHooks";
 
 const Parkinson_Test = () => {
   const [showRating, setShowRating] = useState(false);
+  const [spinner, setSpinner] = useState(false);
   const [counter, setCounter] = useState(1);
   const [apiResponse, setApiResponse] = useState("");
   const [showEmptyFieldsError, setShowEmptyFiledsError] = useState(false);
-
-  const parkinson_inputs = useSelector((state) => state.parkinson_Inputs.value);
-  const dispatch = useDispatch();
+  const inputValidation = ValidInputs();
+  const dataForApi = ApiData();
+  const parkinsonInputReset = ChangeVariables();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -46,96 +29,30 @@ const Parkinson_Test = () => {
 
   //==================================================================================
   const fetchApi = async () => {
-    if (
-      parkinson_inputs.MDVP_fo_HZ !== (0 || "") &&
-      parkinson_inputs.MDVP_Fhi_HZ !== (0 || "") &&
-      parkinson_inputs.MDVP_Flo_HZ !== (0 || "") &&
-      parkinson_inputs.MDVP_Jitter_percentage !== (0 || "") &&
-      parkinson_inputs.MDVP_Jitter_Abs !== (0 || "") &&
-      parkinson_inputs.MDVP_RAP !== (0 || "") &&
-      parkinson_inputs.MDVP_PPQ !== (0 || "") &&
-      parkinson_inputs.Jitter_DDP !== (0 || "") &&
-      parkinson_inputs.MDVP_Shimmer !== (0 || "") &&
-      parkinson_inputs.MDVP_Shimmer_dB !== (0 || "") &&
-      parkinson_inputs.Shimmer_APQ3 !== (0 || "") &&
-      parkinson_inputs.Shimmer_APQ5 !== (0 || "") &&
-      parkinson_inputs.MDVP_APQ !== (0 || "") &&
-      parkinson_inputs.Shimmer_DDA !== (0 || "") &&
-      parkinson_inputs.NHR !== (0 || "") &&
-      parkinson_inputs.HNR !== (0 || "") &&
-      parkinson_inputs.RPDE !== (0 || "") &&
-      parkinson_inputs.DFA !== (0 || "") &&
-      parkinson_inputs.spread1 !== (0 || "") &&
-      parkinson_inputs.spread2 !== (0 || "") &&
-      parkinson_inputs.D2 !== (0 || "") &&
-      parkinson_inputs.PPE !== (0 || "")
-    ) {
+    if (inputValidation) {
       try {
+        setSpinner(true);
         const resposne = await fetch(process.env.REACT_APP_API_PARKINSON, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify({
-            MDVP_fo_HZ: `${parkinson_inputs.MDVP_fo_HZ}`,
-            MDVP_Fhi_HZ: `${parkinson_inputs.MDVP_Fhi_HZ}`,
-            MDVP_Flo_HZ: `${parkinson_inputs.MDVP_Flo_HZ}`,
-            MDVP_Jitter_percentage: `${parkinson_inputs.MDVP_Jitter_percentage}`,
-            MDVP_Jitter_Abs: `${parkinson_inputs.MDVP_Jitter_Abs}`,
-            MDVP_RAP: `${parkinson_inputs.MDVP_RAP}`,
-            MDVP_PPQ: `${parkinson_inputs.MDVP_PPQ}`,
-            Jitter_DDP: `${parkinson_inputs.Jitter_DDP}`,
-            MDVP_Shimmer: `${parkinson_inputs.MDVP_Shimmer}`,
-            MDVP_Shimmer_dB: `${parkinson_inputs.MDVP_Shimmer_dB}`,
-            Shimmer_APQ3: `${parkinson_inputs.Shimmer_APQ3}`,
-            Shimmer_APQ5: `${parkinson_inputs.Shimmer_APQ5}`,
-            MDVP_APQ: `${parkinson_inputs.MDVP_APQ}`,
-            Shimmer_DDA: `${parkinson_inputs.Shimmer_DDA}`,
-            NHR: `${parkinson_inputs.NHR}`,
-            HNR: `${parkinson_inputs.HNR}`,
-            RPDE: `${parkinson_inputs.RPDE}`,
-            DFA: `${parkinson_inputs.DFA}`,
-            spread1: `${parkinson_inputs.spread1}`,
-            spread2: `${parkinson_inputs.spread2}`,
-            D2: `${parkinson_inputs.D2}`,
-            PPE: `${parkinson_inputs.PPE}`,
-          }),
+          body: JSON.stringify(dataForApi),
         });
         const responseResult = await resposne.json();
-        console.log(responseResult);
         setApiResponse(responseResult);
-        dispatch(changeD2(""));
-        dispatch(changeDFA(""));
-        dispatch(changeHNR(""));
-        dispatch(changeJitter_DDP(""));
-        dispatch(changeMDVP_APQ(""));
-        dispatch(changeMDVP_Fhi_HZ(""));
-        dispatch(changeMDVP_Flo_HZ(""));
-        dispatch(changeMDVP_Jitter_Abs(""));
-        dispatch(changeMDVP_Jitter_percentage(""));
-        dispatch(changeMDVP_PPQ(""));
-        dispatch(changeMDVP_RAP(""));
-        dispatch(changeMDVP_Shimmer(""));
-        dispatch(changeMDVP_Shimmer_dB(""));
-        dispatch(changeMDVP_fo_HZ(""));
-        dispatch(changeNHR(""));
-        dispatch(changePPE(""));
-        dispatch(changeRPDE(""));
-        dispatch(changeShimmer_APQ3(""));
-        dispatch(changeShimmer_APQ5(""));
-        dispatch(changeShimmer_DDA(""));
-        dispatch(changeSpread1(""));
-        dispatch(changeSpread2(""));
+        parkinsonInputReset();
       } catch (err) {
-        console.error(err);
+        toast.error(err.message);
       }
     } else {
-      setShowEmptyFiledsError(!showEmptyFieldsError);
+      toast.error("There are empty fields");
     }
   };
   //==================================================================================
 
   useEffect(() => {
+    setSpinner(false);
     const checkCounter = () => {
       if (counter > 1) {
         setTimeout(() => {
@@ -150,25 +67,13 @@ const Parkinson_Test = () => {
 
   return (
     <MainSection>
-      {showEmptyFieldsError ? (
-        <div className="Empty-Fields">
-          <div className="Empty-Fields-Container">
-            <h1> Empty Fields </h1>
-            <p>Please Fill All The Empty Fileds </p>
-            <Button
-              className="button"
-              variant="contained"
-              onClick={() => {
-                setShowEmptyFiledsError(!showEmptyFieldsError);
-              }}
-            >
-              Close
-            </Button>
-          </div>
+      <Toaster />
+      {spinner && (
+        <div className="spinner-container">
+          <CircularProgress className="spinner" />
         </div>
-      ) : (
-        <></>
       )}
+      {/* //================================================================ */}
       {apiResponse.length !== 0 ? (
         <div className="result">
           <div className="result-container">
@@ -214,6 +119,8 @@ const Parkinson_Test = () => {
           );
         })}
 
+        {/* //================================================================ */}
+
         <div className="predict-button">
           <Button
             className="button"
@@ -226,6 +133,8 @@ const Parkinson_Test = () => {
           </Button>
         </div>
       </div>
+      {/* //================================================================ */}
+
       <div class="custom-shape-divider-bottom-1712619373">
         <svg
           data-name="Layer 1"
@@ -278,6 +187,13 @@ const MainSection = styled.div`
   overflow: hidden;
   padding-top: 50px;
   padding-bottom: 50px;
+
+  .go3958317564 {
+    font-size: small;
+    font-family: myFont;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
 
   .Empty-Fields {
     position: fixed;

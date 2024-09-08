@@ -10,8 +10,9 @@ import { useSelector } from "react-redux";
 import { useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import Downloads from "../Components/Downloads";
+import Footer from "../Components/Footer";
 
-const HomePage = ({ showSideBar, setShowSideBar }) => {
+const HomePage = ({ showSideBar }) => {
   const user = useSelector((state) => state.user.value);
   const show_app = useSelector((state) => state.show_app.value);
   const sectionRef = useRef();
@@ -23,7 +24,7 @@ const HomePage = ({ showSideBar, setShowSideBar }) => {
 
   return (
     <MainSection showSideBar={showSideBar}>
-      {show_app ? <Downloads /> : <></>}
+      {show_app && <Downloads />}
       <FirstSection>
         <Left>
           <div className="left-container">
@@ -102,29 +103,7 @@ const HomePage = ({ showSideBar, setShowSideBar }) => {
       </ThirdSection>
       <Section_Four>
         <div className="footer-container">
-          <div className="footer-text">
-            {user ? <h1>Explore our website</h1> : <h1>Join Our Community</h1>}
-            <p>
-              Are you tired of endlessly searching for answers to your health
-              concerns? Sign up now for our medical website and get personalized
-              diagnoses for your symptoms, all from the comfort of your own
-              home. Say goodbye to the uncertainty and start taking control of
-              your health today.
-            </p>
-            {user ? (
-              <></>
-            ) : (
-              <Button
-                className="test-button"
-                variant="contained"
-                onClick={() => {
-                  navigate("/register");
-                }}
-              >
-                Join Us
-              </Button>
-            )}
-          </div>
+          <Footer />
         </div>
         <div class="custom-shape-divider-top-1712724646">
           <svg
@@ -331,11 +310,10 @@ const ThirdSection = styled.div`
 
 const Section_Four = styled.div`
   position: relative;
-  padding: 0px 200px;
   min-height: 320px;
   display: grid;
   place-content: center;
-  padding-top: 50px;
+  padding-top: 15px;
   background: radial-gradient(
     circle,
     rgba(35, 150, 250, 1) 0%,
@@ -376,40 +354,5 @@ const Section_Four = styled.div`
   }
   //=============================================================
   .footer-container {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 50px;
-    img {
-      height: 230px;
-    }
-  }
-  .footer-text {
-    display: flex;
-    align-items: start;
-    justify-content: space-between;
-    flex-direction: column;
-    font-family: myFont;
-    flex-wrap: wrap;
-    gap: 20px;
-    /* padding-right: 50px; */
-    .test-button {
-      border-color: white;
-      color: rgba(35, 100, 250, 1);
-      background-color: white;
-      font-family: myFont;
-      box-shadow: none;
-      padding: 5px 50px;
-      font-size: 15px;
-    }
-    h1 {
-      color: white;
-      letter-spacing: 2px;
-    }
-    p {
-      text-align: start;
-      color: white;
-      letter-spacing: 2px;
-    }
   }
 `;

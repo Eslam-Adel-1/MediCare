@@ -3,74 +3,51 @@ import styled from "styled-components";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import InfoIcon from "@mui/icons-material/Info";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  changeBare_nuclei,
-  changeBland_chromatin,
-  changeClump_thickness,
-  changeMarginal_adhesion,
-  changeMitoses,
-  changeNormal_nucleoli,
-  changeSingle_epithelial_size,
-  changeUniform_cell_shape,
-  changeUniform_cell_size,
-} from "../features/breast_cancer_Inputs/breast_cancer_InputsSlice";
+import { HandleChangeBreastCancer } from "../customHooks/breastCancer/breastCancerHooks";
+import { useSelector } from "react-redux";
+
+//=================================================================
 
 const BreastCancerInfoComponent = ({ name, information }) => {
+  const [showInfo, setShowInfo] = useState(false);
+  const { validationFunction, validationFunction2 } =
+    HandleChangeBreastCancer();
   const breast_cancer_inputs = useSelector(
     (state) => state.breast_cancer_Inputs.value
   );
-  const [showInfo, setShowInfo] = useState(false);
-  const dispatch = useDispatch();
-
-  console.log(breast_cancer_inputs);
 
   const handleChange = (e) => {
-    if (name === "clump_thickness") {
-      dispatch(changeClump_thickness(Math.floor(e.target.value)));
-    } else if (name === "uniform_cell_size") {
-      dispatch(changeUniform_cell_size(Math.floor(e.target.value)));
-    } else if (name === "uniform_cell_shape") {
-      dispatch(changeUniform_cell_shape(Math.floor(e.target.value)));
-    } else if (name === "marginal_adhesion") {
-      dispatch(changeMarginal_adhesion(Math.floor(e.target.value)));
-    } else if (name === "single_epithelial_size") {
-      dispatch(changeSingle_epithelial_size(Math.floor(e.target.value)));
-    } else if (name === "bare_nuclei") {
-      dispatch(changeBare_nuclei(Math.floor(e.target.value)));
-    } else if (name === "bland_chromatin") {
-      dispatch(changeBland_chromatin(Math.floor(e.target.value)));
-    } else if (name === "normal_nucleoli") {
-      dispatch(changeNormal_nucleoli(Math.floor(e.target.value)));
-    } else if (name === "mitoses") {
-      dispatch(changeMitoses(Math.floor(e.target.value)));
-    }
+    const handleChangeEvent = validationFunction(name);
+    handleChangeEvent.forEach((item) => {
+      if (item.condition) {
+        item.action(e);
+      }
+    });
   };
+
   const handleChange2 = () => {
-    if (breast_cancer_inputs.clump_thickness > 999) {
-      dispatch(changeClump_thickness(999));
-    } else if (breast_cancer_inputs.uniform_cell_size > 999) {
-      dispatch(changeUniform_cell_size(999));
-    } else if (breast_cancer_inputs.uniform_cell_shape > 999) {
-      dispatch(changeUniform_cell_shape(999));
-    } else if (breast_cancer_inputs.marginal_adhesion > 999) {
-      dispatch(changeMarginal_adhesion(999));
-    } else if (breast_cancer_inputs.single_epithelial_size > 999) {
-      dispatch(changeSingle_epithelial_size(999));
-    } else if (breast_cancer_inputs.bare_nuclei > 999) {
-      dispatch(changeBare_nuclei(999));
-    } else if (breast_cancer_inputs.bland_chromatin > 999) {
-      dispatch(changeBland_chromatin(999));
-    } else if (breast_cancer_inputs.normal_nucleoli > 999) {
-      dispatch(changeNormal_nucleoli(999));
-    } else if (breast_cancer_inputs.mitoses > 999) {
-      dispatch(changeMitoses(999));
+    const handleChangeEvent = validationFunction2();
+    handleChangeEvent.forEach((item) => {
+      if (item.condition) {
+        item.action();
+      }
+    });
+  };
+
+  const checkValue = () => {
+    const changeValue = validationFunction(name);
+    for (let i = 0; i < changeValue.length; i++) {
+      if (changeValue[i]?.condition) {
+        return changeValue[i]?.action2;
+      }
     }
   };
 
   useEffect(() => {
     handleChange2();
   }, [breast_cancer_inputs]);
+
+  //=================================================================
 
   return (
     <MainSection showInfo={showInfo}>
@@ -89,29 +66,7 @@ const BreastCancerInfoComponent = ({ name, information }) => {
             handleChange2();
           }}
           onChange={(e) => handleChange(e)}
-          value={
-            name === "clump_thickness" ? (
-              breast_cancer_inputs.clump_thickness
-            ) : name === "uniform_cell_shape" ? (
-              breast_cancer_inputs.uniform_cell_shape
-            ) : name === "uniform_cell_size" ? (
-              breast_cancer_inputs.uniform_cell_size
-            ) : name === "marginal_adhesion" ? (
-              breast_cancer_inputs.marginal_adhesion
-            ) : name === "single_epithelial_size" ? (
-              breast_cancer_inputs.single_epithelial_size
-            ) : name === "bare_nuclei" ? (
-              breast_cancer_inputs.bare_nuclei
-            ) : name === "bland_chromatin" ? (
-              breast_cancer_inputs.bland_chromatin
-            ) : name === "normal_nucleoli" ? (
-              breast_cancer_inputs.normal_nucleoli
-            ) : name === "mitoses" ? (
-              breast_cancer_inputs.mitoses
-            ) : (
-              <></>
-            )
-          }
+          value={checkValue()}
         />
 
         <Button
@@ -122,7 +77,7 @@ const BreastCancerInfoComponent = ({ name, information }) => {
         >
           <InfoIcon className="info-icon" />
         </Button>
-        {showInfo ? (
+        {showInfo && (
           <>
             <div className="info-info">
               <p>{information}</p>
@@ -140,8 +95,6 @@ const BreastCancerInfoComponent = ({ name, information }) => {
               </div>
             </div>
           </>
-        ) : (
-          <></>
         )}
       </div>
     </MainSection>

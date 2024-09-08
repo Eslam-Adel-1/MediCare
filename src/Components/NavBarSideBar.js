@@ -14,10 +14,14 @@ import {
 } from "../features/user/userSlice";
 import ListComponentNavBar from "./ListComponentNavBar";
 
+//====================================================================
+
 const NavBarSideBar = ({ showSideBar, setShowSideBar }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
+
+  //====================================================================
 
   return (
     <MainSection showSideBar={showSideBar}>
@@ -87,6 +91,8 @@ const NavBarSideBar = ({ showSideBar, setShowSideBar }) => {
 };
 
 export default NavBarSideBar;
+
+//====================================================================
 
 const MainSection = styled.div`
   flex: 0.25;
@@ -249,3 +255,5 @@ const ThirdSection = styled.div`
   margin: 10px 0px;
   flex: 0.8;
 `;
+
+//====================================================================

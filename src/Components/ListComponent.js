@@ -6,8 +6,10 @@ import QuizIcon from "@mui/icons-material/Quiz";
 import HouseIcon from "@mui/icons-material/House";
 import { useNavigate } from "react-router-dom";
 
-const ListComponent = ({ showSideBar, setShowSideBar }) => {
+const ListComponent = () => {
   const navigate = useNavigate();
+
+  //================================================
 
   return (
     <MainSection>
@@ -50,6 +52,8 @@ const ListComponent = ({ showSideBar, setShowSideBar }) => {
 
 export default ListComponent;
 
+//================================================
+
 const MainSection = styled.ul`
   list-style-type: none;
   font-family: myFont;
@@ -84,3 +88,5 @@ const MainSection = styled.ul`
     font-family: myFont;
   }
 `;
+
+//================================================

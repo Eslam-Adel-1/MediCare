@@ -5,6 +5,8 @@ import styled from "styled-components";
 const Question = ({ question, answer }) => {
   const [showAnswer, setShowAnswer] = useState(false);
 
+  //================================================
+
   return (
     <MainSection showAnswer={showAnswer}>
       <div className="title" onClick={() => setShowAnswer(!showAnswer)}>
@@ -19,6 +21,8 @@ const Question = ({ question, answer }) => {
 };
 
 export default Question;
+
+//================================================
 
 const MainSection = styled.div`
   display: flex;
@@ -61,3 +65,5 @@ const MainSection = styled.div`
     }
   }
 `;
+
+//================================================

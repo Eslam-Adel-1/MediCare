@@ -1,7 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import Button from "@mui/material/Button";
-import { useSelector } from "react-redux";
+
+//================================================
 
 const ResultComponent = ({
   counter,
@@ -37,6 +38,8 @@ const ResultComponent = ({
 
 export default ResultComponent;
 
+//================================================
+
 const MainSection = styled.div`
   display: flex;
   align-items: center;
@@ -60,3 +63,5 @@ const MainSection = styled.div`
     background-color: rgb(35, 150, 250);
   }
 `;
+
+//================================================

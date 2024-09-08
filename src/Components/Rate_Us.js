@@ -2,9 +2,13 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import Button from "@mui/material/Button";
 
+//================================================
+
 const Rate_Us = () => {
   const [opinion, setOpinion] = useState("");
   const [showOpinion, setShowOpinion] = useState(false);
+
+  //================================================
 
   return (
     <MainSection>
@@ -66,6 +70,8 @@ const Rate_Us = () => {
 
 export default Rate_Us;
 
+//================================================
+
 const MainSection = styled.div`
   .request-response {
     position: fixed;
@@ -104,3 +110,5 @@ const MainSection = styled.div`
     margin-top: 20px;
   }
 `;
+
+//================================================

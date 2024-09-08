@@ -1,14 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Button from "@mui/material/Button";
-import XIcon from "@mui/icons-material/X";
-import FacebookIcon from "@mui/icons-material/Facebook";
-import LinkedInIcon from "@mui/icons-material/LinkedIn";
+import logo from "../assets/images/logo2.png";
 import Person2Icon from "@mui/icons-material/Person2";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import LockOpenIcon from "@mui/icons-material/LockOpen";
 import pattern1 from "../assets/images/pattern1.png";
+import CircularProgress from "@mui/material/CircularProgress";
+import Visibility from "@mui/icons-material/Visibility";
+import VisibilityOff from "@mui/icons-material/VisibilityOff";
+import IconButton from "@mui/material/IconButton";
 import { useNavigate } from "react-router-dom";
+import toast, { Toaster } from "react-hot-toast";
 
 const RegisterPage = () => {
   const navigate = useNavigate();
@@ -17,15 +20,18 @@ const RegisterPage = () => {
   const [userPassword, setUserPassword] = useState("");
   const [userConfirmPassword, setUserConfirmPassword] = useState("");
   const [requestResponse, setRequestResponse] = useState(false);
-  const [apiResponse, setApiResponse] = useState("");
-
-  console.log(userName);
-  console.log(userPassword);
-  console.log(userConfirmPassword);
-  console.log(userEmail);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
+  const [spinner, setSpinner] = useState(false);
 
   const fetchApi = async () => {
-    if (userName !== "" || userEmail !== "" || userPassword !== "") {
+    if (
+      userName !== "" &&
+      userEmail !== "" &&
+      userPassword !== "" &&
+      userConfirmPassword !== ""
+    ) {
+      setSpinner(true);
       try {
         const response = await fetch(
           "https://clinicserver-production.up.railway.app/api/users/register",
@@ -43,42 +49,40 @@ const RegisterPage = () => {
           }
         );
         const responseResult = await response.json();
-        console.log(responseResult);
-        setUserEmail("");
-        setUserPassword("");
-        setUserName("");
-        setUserConfirmPassword("");
-        setApiResponse(responseResult);
+        toast.error(responseResult.msg);
         setRequestResponse(!requestResponse);
       } catch (err) {
-        console.error(err);
+        toast.error(err.message);
+        setRequestResponse(!requestResponse);
       }
     } else {
-      console.log("Empty Fields Here");
+      toast.error("There Are Empty Fields");
+      setRequestResponse(!requestResponse);
     }
   };
 
+  useEffect(() => {
+    setSpinner(false);
+  }, [requestResponse]);
+
+  //============================================================================
+
   return (
     <MainSection>
-      {requestResponse ? (
-        <div className="request-response">
-          <div className="request-response-container">
-            <h1>Information</h1>
-            <p>{apiResponse.msg}</p>
-            <Button
-              className="SignUp-button"
-              variant="contained"
-              onClick={() => {
-                setRequestResponse(!requestResponse);
-              }}
-            >
-              Close
-            </Button>
-          </div>
+      <div className="medicare-page-logo">
+        <img src={logo} alt="MediCare" />
+        <h3>MediCare</h3>
+      </div>
+      {/* //================================================================ */}
+      <Toaster />
+      {/* //================================================================ */}
+
+      {spinner && (
+        <div className="spinner-container">
+          <CircularProgress className="spinner" />
         </div>
-      ) : (
-        <></>
       )}
+      {/* //================================================================ */}
 
       <div className="Container">
         <div className="ContainerRightLeft">
@@ -106,11 +110,6 @@ const RegisterPage = () => {
               <div className="one-left">
                 {/* //========================================================= */}
                 <h2>Create An Account</h2>
-                <div className="one-left-icons">
-                  <XIcon className="icon" />
-                  <FacebookIcon className="icon" />
-                  <LinkedInIcon className="icon" />
-                </div>
               </div>
               {/* //========================================================= */}
               <p>Or Use Your Email For Registeration</p>
@@ -153,7 +152,7 @@ const RegisterPage = () => {
                   </label>
 
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     placeholder="Password"
                     id="password"
                     onChange={(e) => {
@@ -161,6 +160,15 @@ const RegisterPage = () => {
                     }}
                     value={userPassword}
                   />
+                  <IconButton
+                    className="Visibility"
+                    aria-label="toggle password visibility"
+                    onClick={() => {
+                      setShowPassword((show) => !show);
+                    }}
+                  >
+                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
                 </div>
                 {/* //============================================================= */}
                 <div className="input-s">
@@ -169,7 +177,7 @@ const RegisterPage = () => {
                   </label>
 
                   <input
-                    type="password"
+                    type={showPassword2 ? "text" : "password"}
                     placeholder="Confirm Password"
                     id="passwordConfirm"
                     onChange={(e) => {
@@ -177,6 +185,15 @@ const RegisterPage = () => {
                     }}
                     value={userConfirmPassword}
                   />
+                  <IconButton
+                    className="Visibility"
+                    aria-label="toggle password visibility"
+                    onClick={() => {
+                      setShowPassword2((show) => !show);
+                    }}
+                  >
+                    {showPassword2 ? <VisibilityOff /> : <Visibility />}
+                  </IconButton>
                 </div>
                 {/* //============================================================= */}
               </div>
@@ -206,35 +223,46 @@ const MainSection = styled.div`
   place-content: center;
   position: relative;
 
-  .request-response {
+  .spinner-container {
     position: fixed;
     top: 0;
     bottom: 0;
-    left: 0;
     right: 0;
-    background-color: rgba(0, 0, 0, 0.6);
+    left: 0;
     display: grid;
     place-content: center;
-    z-index: 1000000000000;
-    .request-response-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-direction: column;
-      background-color: white;
-      padding: 20px;
-      border-radius: 15px;
-      gap: 10px;
-      font-family: myFont;
-      h1 {
-        color: rgb(35, 150, 250);
-        letter-spacing: 1px;
-      }
-      p {
-        color: grey;
-        letter-spacing: 1px;
-      }
+    background-color: rgba(0, 0, 0, 0.4);
+    z-index: 10000;
+    .spinner {
+      color: white;
     }
+  }
+
+  .medicare-page-logo {
+    position: fixed;
+    top: 0;
+    left: 0;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    img {
+      height: 37px;
+      object-fit: cover;
+    }
+    h3 {
+      font-family: myFont;
+      font-weight: 900;
+      color: rgba(35, 150, 250);
+    }
+  }
+
+  .go3958317564 {
+    font-size: small;
+    font-family: myFont;
+    font-weight: 600;
+    letter-spacing: 1px;
   }
 
   .Logo {
@@ -273,6 +301,9 @@ const MainSection = styled.div`
     justify-content: center;
     overflow: hidden;
     border: 1px solid grey;
+    @media (max-width: 710px) {
+      border: none;
+    }
     .right {
       flex: 0.4;
       display: grid;
@@ -288,6 +319,9 @@ const MainSection = styled.div`
       background-position: center;
       background-repeat: no-repeat;
       background-size: cover;
+      @media (max-width: 710px) {
+        display: none;
+      }
 
       .right-container {
         display: flex;
@@ -338,22 +372,33 @@ const MainSection = styled.div`
         align-items: center;
         justify-content: center;
         gap: 30px;
+
         .inputs {
           display: flex;
           align-items: center;
           justify-content: center;
           flex-direction: column;
           gap: 12px;
+
+          .Visibility {
+            width: fit-content;
+            height: fit-content;
+            background: transparent;
+            padding: 0px;
+            border: 0px;
+            color: grey;
+          }
           .input-s {
             display: flex;
             align-items: center;
-            justify-content: center;
-            gap: 10px;
             background-color: #ecf1f2;
-            padding: 3px 15px;
+            padding: 3px 10px;
+            box-sizing: border-box;
             border-radius: 15px;
+            width: 100%;
             .icon-form {
               color: #b2b2b2;
+              margin-right: 10px;
             }
             input {
               outline: none;
@@ -362,6 +407,7 @@ const MainSection = styled.div`
             }
           }
         }
+
         p {
           font-size: 12px;
           color: grey;

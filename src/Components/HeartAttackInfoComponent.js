@@ -3,89 +3,42 @@ import styled from "styled-components";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import InfoIcon from "@mui/icons-material/Info";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  changeAge,
-  changeCa,
-  changeChol,
-  changeCp,
-  changeExang,
-  changeFbs,
-  changeOldpeak,
-  changeRestecg,
-  changeSex,
-  changeSlope,
-  changeThal,
-  changeThalach,
-  changeTrestbps,
-} from "../features/heart_attack_Inputs/heart_attack_InputsSlice";
+import { useSelector } from "react-redux";
+import { HandleChangeHeartAttack } from "../customHooks/heartAttack/HeartAttackHooks";
 
 const HeartAttackInfoComponent = ({ name, information }) => {
   const heart_attack_inputs = useSelector(
     (state) => state.heart_attack_Inputs.value
   );
   const [showInfo, setShowInfo] = useState(false);
-  const dispatch = useDispatch();
+  const { validationFunction, validationFunction2 } = HandleChangeHeartAttack();
 
-  console.log(heart_attack_inputs);
+  //======================================================================
 
   const handleChange = (e) => {
-    if (name === "Age") {
-      dispatch(changeAge(Math.floor(e.target.value)));
-    } else if (name === "Sex") {
-      dispatch(changeSex(Math.floor(e.target.value)));
-    } else if (name === "Cp") {
-      dispatch(changeCp(Math.floor(e.target.value)));
-    } else if (name === "Trestbps") {
-      dispatch(changeTrestbps(Math.floor(e.target.value)));
-    } else if (name === "Chol") {
-      dispatch(changeChol(Math.floor(e.target.value)));
-    } else if (name === "Fbs") {
-      dispatch(changeFbs(Math.floor(e.target.value)));
-    } else if (name === "Restecg") {
-      dispatch(changeRestecg(Math.floor(e.target.value)));
-    } else if (name === "Thalach") {
-      dispatch(changeThalach(Math.floor(e.target.value)));
-    } else if (name === "Exang") {
-      dispatch(changeExang(Math.floor(e.target.value)));
-    } else if (name === "Oldpeak") {
-      dispatch(changeOldpeak(Math.floor(e.target.value)));
-    } else if (name === "Slope") {
-      dispatch(changeSlope(Math.floor(e.target.value)));
-    } else if (name === "Ca") {
-      dispatch(changeCa(Math.floor(e.target.value)));
-    } else if (name === "Thal") {
-      dispatch(changeThal(Math.floor(e.target.value)));
-    }
+    const handleChangeEvent = validationFunction(name);
+    handleChangeEvent.forEach((item) => {
+      if (item.condition) {
+        item.action(e);
+      }
+    });
   };
 
   const handleChange2 = () => {
-    if (heart_attack_inputs.Age > 100) {
-      dispatch(changeAge(100));
-    } else if (heart_attack_inputs.Sex > 1 || heart_attack_inputs.Age.Sex < 0) {
-      dispatch(changeSex(1));
-    } else if (heart_attack_inputs.Cp > 999) {
-      dispatch(changeCp(999));
-    } else if (heart_attack_inputs.Trestbps > 999) {
-      dispatch(changeTrestbps(999));
-    } else if (heart_attack_inputs.Chol > 999) {
-      dispatch(changeChol(999));
-    } else if (heart_attack_inputs.Fbs > 999) {
-      dispatch(changeFbs(999));
-    } else if (heart_attack_inputs.Restecg > 999) {
-      dispatch(changeRestecg(999));
-    } else if (heart_attack_inputs.Thalach > 999) {
-      dispatch(changeThalach(999));
-    } else if (heart_attack_inputs.Exang > 999) {
-      dispatch(changeExang(999));
-    } else if (heart_attack_inputs.Oldpeak > 999) {
-      dispatch(changeOldpeak(999));
-    } else if (heart_attack_inputs.Slope > 999) {
-      dispatch(changeSlope(999));
-    } else if (heart_attack_inputs.Ca > 999) {
-      dispatch(changeCa(999));
-    } else if (heart_attack_inputs.Thal > 999) {
-      dispatch(changeThal(999));
+    const handleChangeEvent = validationFunction2();
+    handleChangeEvent.forEach((item) => {
+      if (item.condition) {
+        item.action();
+      }
+    });
+  };
+
+  const checkValue = () => {
+    const changeValue = validationFunction(name);
+    for (let i = 0; i < changeValue.length; i++) {
+      if (changeValue[i]?.condition) {
+        return changeValue[i]?.action2;
+      }
     }
   };
 
@@ -93,6 +46,7 @@ const HeartAttackInfoComponent = ({ name, information }) => {
     handleChange2();
   }, [heart_attack_inputs]);
 
+  //======================================================================
   return (
     <MainSection showInfo={showInfo}>
       <div className="input-container">
@@ -109,37 +63,7 @@ const HeartAttackInfoComponent = ({ name, information }) => {
             handleChange2();
           }}
           onChange={(e) => handleChange(e)}
-          value={
-            name === "Age" ? (
-              heart_attack_inputs.Age
-            ) : name === "Sex" ? (
-              heart_attack_inputs.Sex
-            ) : name === "Cp" ? (
-              heart_attack_inputs.Cp
-            ) : name === "Trestbps" ? (
-              heart_attack_inputs.Trestbps
-            ) : name === "Chol" ? (
-              heart_attack_inputs.Chol
-            ) : name === "Fbs" ? (
-              heart_attack_inputs.Fbs
-            ) : name === "Restecg" ? (
-              heart_attack_inputs.Restecg
-            ) : name === "Thalach" ? (
-              heart_attack_inputs.Thalach
-            ) : name === "Exang" ? (
-              heart_attack_inputs.Exang
-            ) : name === "Oldpeak" ? (
-              heart_attack_inputs.Oldpeak
-            ) : name === "Slope" ? (
-              heart_attack_inputs.Slope
-            ) : name === "Ca" ? (
-              heart_attack_inputs.Ca
-            ) : name === "Thal" ? (
-              heart_attack_inputs.Thal
-            ) : (
-              <></>
-            )
-          }
+          value={checkValue()}
         />
 
         <Button
@@ -175,6 +99,8 @@ const HeartAttackInfoComponent = ({ name, information }) => {
     </MainSection>
   );
 };
+
+//======================================================================
 
 export default HeartAttackInfoComponent;
 
@@ -238,3 +164,5 @@ const MainSection = styled.div`
     }
   }
 `;
+
+//======================================================================

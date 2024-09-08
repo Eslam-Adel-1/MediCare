@@ -3,66 +3,50 @@ import styled from "styled-components";
 import TextField from "@mui/material/TextField";
 import Button from "@mui/material/Button";
 import InfoIcon from "@mui/icons-material/Info";
-import { useSelector, useDispatch } from "react-redux";
-import {
-  changeAge,
-  changeBMI,
-  changeBloodPressure,
-  changeDiabetesPedigreeFunction,
-  changeGlucose,
-  changeInsulin,
-  changePregnancies,
-  changeSkinThickness,
-} from "../features/diabetes_Inputs/diabetes_InputsSlice";
+import { useSelector } from "react-redux";
+import { HandleChangeDiabetes } from "../customHooks/diabetes/diabetesHooks";
+
+//=================================================================
 
 const DiabetesInfoComponent = ({ name, information }) => {
   const diabetes_inputs = useSelector((state) => state.diabetes_Inputs.value);
   const [showInfo, setShowInfo] = useState(false);
-  const dispatch = useDispatch();
+  const { validationFunction, validationFunction2 } = HandleChangeDiabetes();
+
+  //=================================================================
 
   const handleChange = (e) => {
-    if (name === "Pregnancies") {
-      dispatch(changePregnancies(Math.floor(e.target.value)));
-    } else if (name === "Glucose") {
-      dispatch(changeGlucose(Math.floor(e.target.value)));
-    } else if (name === "BloodPressure") {
-      dispatch(changeBloodPressure(Math.floor(e.target.value)));
-    } else if (name === "SkinThickness") {
-      dispatch(changeSkinThickness(Math.floor(e.target.value)));
-    } else if (name === "Insulin") {
-      dispatch(changeInsulin(Math.floor(e.target.value)));
-    } else if (name === "BMI") {
-      dispatch(changeBMI(Math.floor(e.target.value)));
-    } else if (name === "DiabetesPedigreeFunction") {
-      dispatch(changeDiabetesPedigreeFunction(Math.floor(e.target.value)));
-    } else if (name === "Age") {
-      dispatch(changeAge(Math.floor(e.target.value)));
-    }
+    const handleChangeEvent = validationFunction(name);
+    handleChangeEvent.forEach((item) => {
+      if (item.condition) {
+        item.action(e);
+      }
+    });
   };
 
   const handleChange2 = () => {
-    if (diabetes_inputs.Pregnancies > 999) {
-      dispatch(changePregnancies(999));
-    } else if (diabetes_inputs.Glucose > 999) {
-      dispatch(changeGlucose(999));
-    } else if (diabetes_inputs.BloodPressure > 999) {
-      dispatch(changeBloodPressure(999));
-    } else if (diabetes_inputs.SkinThickness > 999) {
-      dispatch(changeSkinThickness(999));
-    } else if (diabetes_inputs.Insulin > 999) {
-      dispatch(changeInsulin(999));
-    } else if (diabetes_inputs.BMI > 999) {
-      dispatch(changeBMI(999));
-    } else if (diabetes_inputs.DiabetesPedigreeFunction > 999) {
-      dispatch(changeDiabetesPedigreeFunction(999));
-    } else if (diabetes_inputs.Age > 100) {
-      dispatch(changeAge(100));
+    const handleChangeEvent = validationFunction2();
+    handleChangeEvent.forEach((item) => {
+      if (item.condition) {
+        item.action();
+      }
+    });
+  };
+
+  const checkValue = () => {
+    const changeValue = validationFunction(name);
+    for (let i = 0; i < changeValue.length; i++) {
+      if (changeValue[i]?.condition) {
+        return changeValue[i]?.action2;
+      }
     }
   };
 
   useEffect(() => {
     handleChange2();
   }, [diabetes_inputs]);
+
+  //=================================================================
 
   return (
     <MainSection showInfo={showInfo}>
@@ -80,25 +64,7 @@ const DiabetesInfoComponent = ({ name, information }) => {
             handleChange2();
           }}
           onChange={(e) => handleChange(e)}
-          value={
-            name === "Pregnancies"
-              ? diabetes_inputs.Pregnancies
-              : name === "Glucose"
-              ? diabetes_inputs.Glucose
-              : name === "BloodPressure"
-              ? diabetes_inputs.BloodPressure
-              : name === "SkinThickness"
-              ? diabetes_inputs.SkinThickness
-              : name === "Insulin"
-              ? diabetes_inputs.Insulin
-              : name === "BMI"
-              ? diabetes_inputs.BMI
-              : name === "DiabetesPedigreeFunction"
-              ? diabetes_inputs.DiabetesPedigreeFunction
-              : name === "Age"
-              ? diabetes_inputs.Age
-              : ""
-          }
+          value={checkValue()}
         />
 
         <Button
@@ -109,7 +75,7 @@ const DiabetesInfoComponent = ({ name, information }) => {
         >
           <InfoIcon className="info-icon" />
         </Button>
-        {showInfo ? (
+        {showInfo && (
           <>
             <div className="info-info">
               <p>{information}</p>
@@ -127,13 +93,13 @@ const DiabetesInfoComponent = ({ name, information }) => {
               </div>
             </div>
           </>
-        ) : (
-          <></>
         )}
       </div>
     </MainSection>
   );
 };
+
+//=================================================================
 
 export default DiabetesInfoComponent;
 
@@ -197,3 +163,5 @@ const MainSection = styled.div`
     }
   }
 `;
+
+//=================================================================
