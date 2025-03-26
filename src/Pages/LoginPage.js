@@ -204,6 +204,7 @@ const MainSection = styled.div`
   display: grid;
   place-content: center;
   position: relative;
+  overflow-y: scroll;
 
   .medicare-page-logo {
     position: fixed;
@@ -215,13 +216,14 @@ const MainSection = styled.div`
     justify-content: center;
     gap: 5px;
     img {
-      height: 37px;
+      height: 3rem;
       object-fit: cover;
     }
     h3 {
       font-family: myFont;
       font-weight: 900;
       color: rgba(35, 150, 250);
+      font-size: 1.5rem;
     }
   }
 
@@ -296,11 +298,16 @@ const MainSection = styled.div`
     left: 30px;
     bottom: 50px;
   }
-
+  .Container {
+    width: 55vw;
+    height: 70vh;
+    min-height: 400px;
+    min-width: 500px;
+  }
   .ContainerRightLeft {
-    height: 420px;
-    width: 700px;
-    border-radius: 10px;
+    height: 100%;
+    width: 100%;
+    border-radius: 20px;
     display: flex;
     align-items: center;
     justify-content: center;

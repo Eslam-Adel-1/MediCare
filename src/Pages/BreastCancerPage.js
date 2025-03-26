@@ -346,6 +346,7 @@ const SectionEight = styled.div`
     font-family: myFont;
     gap: 20px;
     padding-right: 50px;
+    max-width: 1000px;
     @media (max-width: 450px) {
       align-items: center;
       justify-content: center;
@@ -366,6 +367,7 @@ const SectionEight = styled.div`
       text-align: start;
       color: white;
       letter-spacing: 2px;
+      max-width: 700px;
       @media (max-width: 800px) {
         display: none;
       }

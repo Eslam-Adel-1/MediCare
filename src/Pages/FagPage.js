@@ -133,6 +133,7 @@ const FirstSection = styled.div`
     flex-direction: column;
     gap: 35px;
     min-height: 100px;
+    max-width: 1200px;
 
     .get-help-image {
       height: 250px;
@@ -227,4 +228,10 @@ const SecondSection = styled.div`
 
 const ThirdSection = styled.div`
   padding: 20px 80px;
+  @media (min-width: 1280px) {
+    padding: 20px 15rem;
+  }
+  @media (max-width: 640px) {
+    padding: 20px 30px;
+  }
 `;

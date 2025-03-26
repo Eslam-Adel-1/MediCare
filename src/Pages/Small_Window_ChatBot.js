@@ -134,8 +134,10 @@ const Small_Window_ChatBot = () => {
 export default Small_Window_ChatBot;
 
 const MainSection = styled.div`
-  height: 335px;
-  width: 230px;
+  height: 60%;
+  width: 25%;
+  min-height: 300px;
+  min-width: 300px;
   border-radius: 10px;
   background-color: white;
   position: fixed;
