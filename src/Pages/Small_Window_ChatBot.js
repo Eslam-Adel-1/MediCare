@@ -3,7 +3,7 @@ import styled from "styled-components";
 import SendIcon from "@mui/icons-material/Send";
 import Button from "@mui/material/Button";
 import ChatBotLogo from "../assets/images/ChatBotLogo.png";
-import { useSpeechSynthesis } from "react-speech-kit";
+// import { useSpeechSynthesis } from "react-speech-kit";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 
@@ -12,7 +12,7 @@ const Small_Window_ChatBot = () => {
   const [apiResponse, setApiResponse] = useState("");
   const [text, setText] = useState("");
   const [chatMessages, setChatMessages] = useState(Messagesss);
-  const { speak } = useSpeechSynthesis();
+  // const { speak } = useSpeechSynthesis();
 
   const ref = useRef();
   const navigate = useNavigate();
@@ -101,7 +101,7 @@ const Small_Window_ChatBot = () => {
               ref={ref}
               key={item.uniqueId}
               className={item.id === 1 ? "bot" : "user"}
-              onClick={() => speak({ text: item.message })}
+              // onClick={() => speak({ text: item.message })}
             >
               <p>{item.message}</p>
             </div>

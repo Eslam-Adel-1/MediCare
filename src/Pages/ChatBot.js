@@ -6,7 +6,7 @@ import SendIcon from "@mui/icons-material/Send";
 import TextField from "@mui/material/TextField";
 import ChatBotLogo from "../assets/images/ChatBotLogo.png";
 import MicIcon from "@mui/icons-material/Mic";
-import { useSpeechSynthesis } from "react-speech-kit";
+// import { useSpeechSynthesis } from "react-speech-kit";
 import { useSelector } from "react-redux";
 import SidebarChatBot from "../Components/SidebarChatBot";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -23,7 +23,7 @@ const ChatBot = () => {
   const [showMuted, setShowMuted] = useState(false);
   const [text, setText] = useState("");
   const [directedPage, setDirectedPage] = useState("");
-  const { speak } = useSpeechSynthesis();
+  // const { speak } = useSpeechSynthesis();
   const ref = useRef();
 
   //====================================================================
@@ -201,7 +201,7 @@ const ChatBot = () => {
                       <Avatar className="Avatar-image" src={ChatBotLogo} />
                       <div
                         className={item.id === 1 ? "bot" : "user"}
-                        onClick={() => speak({ text: item.message })}
+                        // onClick={() => speak({ text: item.message })}
                       >
                         <p>{item.message}</p>
                       </div>
@@ -210,7 +210,7 @@ const ChatBot = () => {
                     <>
                       <div
                         className={item.id === 1 ? "bot" : "user"}
-                        onClick={() => speak({ text: item.message })}
+                        // onClick={() => speak({ text: item.message })}
                       >
                         <p>{item.message}</p>
                       </div>
